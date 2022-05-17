@@ -31,6 +31,7 @@ class Game{
 				this.bricks.push(new Brick(i, j, "red", "", levelArray[i][j]));
 			}
 		}
+		this.bricks = this.bricks.filter(brick => !brick.isDestroyed);
 	}
 
 	drawBricks(){
@@ -49,11 +50,11 @@ class Game{
 			this.balls[i].calculate();
 			this.balls[i].draw(this.canvas);
 			this.balls[i].checkPaddleCollision(this.canvas, this.paddle);
+			this.balls[i].checkCollision(this.canvas, null);
 			for(let j = 0; j < this.bricks.length; j++){
 				this.balls[i].checkCollision(this.canvas, this.bricks[j]);
 			}
 		}
-
 		// this.bricks 중 isDestroyed가 False인 것만 모아 새로운 배열을 만듭니다
 		this.bricks = this.bricks.filter(brick => !brick.isDestroyed);
 	}
@@ -87,11 +88,12 @@ class Ball{
 		// 공이 바깥으로 나가거나, Brick에 닿을 경우 check하는 함수입니다
 		// 옆면에 닿을 경우 verticalCollision()을, 위/아래에 닿을 경우 horizontalCollision()를 실행해 주세요, angle을 각각 뒤집어주는 함수입니다
 		// 만약 brick과 닿은 경우, brick.collision()을 실행해 주세요 -> Brick의 count를 1 줄이는 함수입니다
+		// brick === null 인 경우, 벽돌이 없이 벽과의 충돌만 계산합니다
 
 	}
 
 	checkPaddleCollision(canvas, paddle){
-		// 공이 패들과 닿았을 때, angle도 바뀌어야 합니다
+		// 공이 패들과 닿았을 때, 패들에 닿은 위치에 따라 다른 방향으로 튀어야 합니다.
 		// 공의 angle을 -> 가장 왼쪽과 닿았을 경우 3/2*PI, 가장 오른쪽이 닿았을 때 2*PI의 값을 가지도록 (선형) 완성해 주세요
 
 	}
@@ -134,6 +136,7 @@ class Paddle{
 	}
 
 	draw(canvas){
+		canvas.fillStyle = "red";
 		canvas.fillRect(this.x, this.y, this.size, this.height);
 	}
 
