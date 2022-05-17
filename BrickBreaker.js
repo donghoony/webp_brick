@@ -44,9 +44,14 @@ class Game{
 		this.drawBricks();
 		this.paddle.calculate(this.canvas);
 		this.paddle.draw(this.canvas);
+
 		for(let i = 0; i < this.balls.length; i++) {
 			this.balls[i].calculate();
 			this.balls[i].draw(this.canvas);
+			this.balls[i].checkPaddleCollision(this.canvas, this.paddle);
+			for(let j = 0; j < this.bricks.length; j++){
+				this.balls[i].checkCollision(this.canvas, this.bricks[j]);
+			}
 		}
 
 		// this.bricks 중 isDestroyed가 False인 것만 모아 새로운 배열을 만듭니다
@@ -56,7 +61,7 @@ class Game{
 	run(){
 		clearInterval(this.gameLoop);
 		this.build(levels[0]);
-		this.balls.push(new Ball(225, 600, Math.random() * Math.PI * 2, 2, 5, "orange"));
+		this.balls.push(new Ball(225, 600, Math.random() * Math.PI * 2, 6, 5, "orange"));
 		this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
 	}
 }
@@ -85,19 +90,26 @@ class Ball{
 
 	}
 
+	checkPaddleCollision(canvas, paddle){
+		// 공이 패들과 닿았을 때, angle도 바뀌어야 합니다
+		// 공의 angle을 -> 가장 왼쪽과 닿았을 경우 3/2*PI, 가장 오른쪽이 닿았을 때 2*PI의 값을 가지도록 (선형) 완성해 주세요
+
+	}
+
 	calculate(){
 		this.x += Math.cos(this.angle) * this.speed;
 		this.y += Math.sin(this.angle) * this.speed;
 	}
 
 	verticalCollision(){
-		var PI = math.PI
+		var PI = Math.PI
 		if (this.angle <= PI){
 			this.angle = PI - this.angle;
 		}
 		else{
 			this.angle = 2*PI - (this.angle - PI);
 		}
+		this.calculate();
 	}
 
 	horizontalCollision(){
@@ -108,6 +120,7 @@ class Ball{
 		else{
 			this.angle = 3/2*PI - (this.angle - PI/2);
 		}
+		this.calculate();
 	}
 }
 
@@ -137,6 +150,8 @@ class Brick {
 		this.height = 25;
 		this.yIndex = yIndex;
 		this.xIndex = xIndex;
+		this.y = this.yIndex * this.height;
+		this.x = this.xIndex * this.width;
 		this.color = color;
 		this.item = item;
 		this.count = count;
