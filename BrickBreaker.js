@@ -140,7 +140,7 @@ class Paddle{
 		canvas.fillRect(this.x, this.y, this.size, this.height);
 	}
 
-	calculate(canvas){
+	calculate(){
 		// 마우스의 위치에 따라 패들의 x좌표를 변경해 주세요
 		// 변경은 speed값만큼 변합니다, 현재 마우스 좌표는 전역변수 mouseX에 저장돼 있습니다. mouseX는 캔버스 좌표로 변환돼 있습니다!
 
