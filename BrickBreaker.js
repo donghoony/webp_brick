@@ -149,22 +149,28 @@ class Paddle{
 
 class Brick {
 	constructor(yIndex, xIndex, color, item, count){
-		this.width = 50;
-		this.height = 25;
+		this.width = 50; 
+		this.height = 25; 
 		this.yIndex = yIndex;
-		this.xIndex = xIndex;
+		this.xIndex = xIndex; 
 		this.y = this.yIndex * this.height;
 		this.x = this.xIndex * this.width;
 		this.color = color;
 		this.item = item;
-		this.count = count;
-		this.isDestroyed = this.count === 0;
+		this.count = count; 
+		this.isDestroyed = this.count === 0; 
 	}
 
 	draw(canvas){
 		// brick 하나를 그리는 함수를 작성해 주세요.
 		// brick.yIndex, brick.xIndex를 통해 접근할 수 있습니다. yIndex는 가장 위가 0입니다.
 		// xIndex는 0 ~ 9로 한 줄에 10개의 블럭이 있습니다
+
+		canvas.strokeStyle="blue";
+		canvas.fillStyle=this.color;
+
+		canvas.strokeRect(this.x,this.y,this.width,this.height);
+		canvas.fillRect(this.x,this.y,this.width,this.height);
 
 	}
 
