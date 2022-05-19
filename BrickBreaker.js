@@ -28,7 +28,7 @@ class Game{
 	build(levelArray){
 		for(let i = 0; i < levelArray.length; i++){
 			for(let j = 0; j < levelArray[i].length; j++){
-				this.bricks.push(new Brick(i, j, "red", "", levelArray[i][j]));
+				this.bricks.push(new Brick(i, j, "yellow", "green", " ", levelArray[i][j]));
 			}
 		}
 		this.bricks = this.bricks.filter(brick => !brick.isDestroyed);
@@ -148,17 +148,18 @@ class Paddle{
 }
 
 class Brick {
-	constructor(yIndex, xIndex, color, item, count){
-		this.width = 50; 
-		this.height = 25; 
+	constructor(yIndex, xIndex, color, borderColor, item, count){
+		this.width = 50;
+		this.height = 25;
 		this.yIndex = yIndex;
-		this.xIndex = xIndex; 
+		this.xIndex = xIndex;
 		this.y = this.yIndex * this.height;
 		this.x = this.xIndex * this.width;
 		this.color = color;
+		this.borderColor=borderColor;
 		this.item = item;
-		this.count = count; 
-		this.isDestroyed = this.count === 0; 
+		this.count = count;
+		this.isDestroyed = this.count === 0;
 	}
 
 	draw(canvas){
@@ -166,7 +167,7 @@ class Brick {
 		// brick.yIndex, brick.xIndex를 통해 접근할 수 있습니다. yIndex는 가장 위가 0입니다.
 		// xIndex는 0 ~ 9로 한 줄에 10개의 블럭이 있습니다
 
-		canvas.strokeStyle="blue";
+		canvas.strokeStyle=this.borderColor;
 		canvas.fillStyle=this.color;
 
 		canvas.strokeRect(this.x,this.y,this.width,this.height);
