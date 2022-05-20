@@ -223,8 +223,8 @@ class Brick {
 		canvas.strokeStyle=this.borderColor;
 		canvas.fillStyle=this.color;
 
-		canvas.strokeRect(this.x,this.y,this.width,this.height);
-		canvas.fillRect(this.x,this.y,this.width,this.height);
+		canvas.strokeRect(this.x+30,this.y+20,this.width-6,this.height-4);
+		canvas.fillRect(this.x+30,this.y+20,this.width-6,this.height-4);
 
 	}
 
@@ -235,11 +235,10 @@ class Brick {
 
 const levels =[
 	[
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+		[1, 1, 1, 1, 1, 1, 1, 1, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1]
 	],
 ];
