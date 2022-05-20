@@ -29,7 +29,7 @@ class Game{
 	build(levelArray){
 		for(let i = 0; i < levelArray.length; i++){
 			for(let j = 0; j < levelArray[i].length; j++){
-				this.bricks.push(new Brick(i, j, "red", "", levelArray[i][j]));
+				this.bricks.push(new Brick(i, j, "yellow", "green", " ", levelArray[i][j]));
 			}
 		}
 		this.bricks = this.bricks.filter(brick => !brick.isDestroyed);
@@ -140,12 +140,17 @@ class Ball{
 			this.verticalCollision();
 			brick.collision();
 		}
+
 	}
 
 	checkPaddleCollision(canvas, paddle){
 		// 공이 패들과 닿았을 때, angle도 바뀌어야 합니다
 		// 공의 angle을 -> 가장 왼쪽과 닿았을 경우 3/2*PI, 가장 오른쪽이 닿았을 때 2*PI의 값을 가지도록 (선형) 완성해 주세요
-
+		if(this.y + this.radius > paddle.y) {
+			if(this.x > paddle.x && this.x < (paddle.x + paddle.size)) {
+				this.angle = 2*PI -(PI * (paddle.x + paddle.size - this.x) / paddle.size);
+			}
+		}
 	}
 
 	calculate(){
@@ -196,7 +201,7 @@ class Paddle{
 }
 
 class Brick {
-	constructor(yIndex, xIndex, color, item, count){
+	constructor(yIndex, xIndex, color, borderColor, item, count){
 		this.width = 50;
 		this.height = 25;
 		this.yIndex = yIndex;
@@ -204,6 +209,7 @@ class Brick {
 		this.y = this.yIndex * this.height;
 		this.x = this.xIndex * this.width;
 		this.color = color;
+		this.borderColor=borderColor;
 		this.item = item;
 		this.count = count;
 		this.isDestroyed = this.count === 0;
@@ -213,6 +219,12 @@ class Brick {
 		// brick 하나를 그리는 함수를 작성해 주세요.
 		// brick.yIndex, brick.xIndex를 통해 접근할 수 있습니다. yIndex는 가장 위가 0입니다.
 		// xIndex는 0 ~ 9로 한 줄에 10개의 블럭이 있습니다
+
+		canvas.strokeStyle=this.borderColor;
+		canvas.fillStyle=this.color;
+
+		canvas.strokeRect(this.x,this.y,this.width,this.height);
+		canvas.fillRect(this.x,this.y,this.width,this.height);
 
 	}
 
