@@ -1,4 +1,5 @@
 var game, mouseX;
+const PI = Math.PI;
 $(document).ready(function(){
 	var context = document.getElementById("brick-board").getContext("2d");
 	$(document).mousemove(function(event){
@@ -62,7 +63,7 @@ class Game{
 	run(){
 		clearInterval(this.gameLoop);
 		this.build(levels[0]);
-		this.balls.push(new Ball(225, 600, Math.random() * Math.PI * 2, 6, 5, "orange"));
+		this.balls.push(new Ball(225, 600, Math.random() * PI * 2, 5, 8, "orange"));
 		this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
 	}
 }
@@ -80,7 +81,7 @@ class Ball{
 	draw(canvas){
 		canvas.beginPath();
 		canvas.fillStyle = this.color;
-		canvas.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
+		canvas.arc(this.x, this.y, this.radius, 0, PI * 2, true);
 		canvas.fill();
 	}
 
@@ -88,11 +89,62 @@ class Ball{
 		// 공이 바깥으로 나가거나, Brick에 닿을 경우 check하는 함수입니다
 		// 옆면에 닿을 경우 verticalCollision()을, 위/아래에 닿을 경우 horizontalCollision()를 실행해 주세요, angle을 각각 뒤집어주는 함수입니다
 		// 만약 brick과 닿은 경우, brick.collision()을 실행해 주세요 -> Brick의 count를 1 줄이는 함수입니다
-		// brick === null 인 경우, 벽돌이 없이 벽과의 충돌만 계산합니다
+		// 벽면
+		if(this.x - this.radius < 0) {
+			this.verticalCollision();
+		}
+		else if(this.x + this.radius >= 500){
+			this.verticalCollision();
+		}
+		else if(this.y - this.radius < 0){
+			this.horizontalCollision();
+		}
+		else if (this.y + this.radius >= 800){
+			// 튕겨나오게 만들었지만, 이후에 라이프를 1 줄이는 함수를 실행할 예정입니다
+			this.horizontalCollision();
+		}
+		if (brick === null) return;
+
+		let topBorder = brick.y;
+		let bottomBorder = brick.y + brick.height;
+		let leftBorder = brick.x;
+		let rightBorder = brick.x + brick.width;
+
+		let new_y = this.y + Math.sin(this.angle) * this.speed;
+		let new_x = this.x + Math.cos(this.angle) * this.speed;
+
+		var ccw = (x1, y1, x2, y2, x3, y3) => {
+			let ans = (x2-x1) * (y3-y1) - (y2-y1) * (x3-x1);
+			if (ans < 0) return -1;
+			else if (ans > 0) return 1;
+			else return 0;
+		};
+		var cross = (x1, y1, x2, y2, x3, y3, x4, y4) => {
+			return (ccw(x1, y1, x2, y2, x3, y3) * ccw(x1, y1, x2, y2, x4, y4) <= 0) &&
+				(ccw(x3, y3, x4, y4, x1, y1) * ccw(x3, y3, x4, y4, x2, y2) <= 0);
+		}
+
+		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, topBorder-this.radius, rightBorder + this.radius, topBorder - this.radius)){
+			this.horizontalCollision();
+			brick.collision();
+		}
+		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, bottomBorder + this.radius, rightBorder + this.radius, bottomBorder + this.radius)){
+			this.horizontalCollision();
+			brick.collision();
+		}
+		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, topBorder - this.radius, leftBorder - this.radius, bottomBorder + this.radius)){
+			this.verticalCollision();
+			brick.collision();
+		}
+		if (cross(this.x, this.y, new_x, new_y, rightBorder + this.radius, topBorder - this.radius, rightBorder + this.radius, bottomBorder + this.radius)){
+			this.verticalCollision();
+			brick.collision();
+		}
+
 	}
 
 	checkPaddleCollision(canvas, paddle){
-		// 공이 패들과 닿았을 때, 패들에 닿은 위치에 따라 다른 방향으로 튀어야 합니다.
+		// 공이 패들과 닿았을 때, angle도 바뀌어야 합니다
 		// 공의 angle을 -> 가장 왼쪽과 닿았을 경우 3/2*PI, 가장 오른쪽이 닿았을 때 2*PI의 값을 가지도록 (선형) 완성해 주세요
 		if(this.y + this.radius > paddle.y) {
 			if(this.x > paddle.x && this.x < (paddle.x + paddle.size)) {
@@ -107,7 +159,6 @@ class Ball{
 	}
 
 	verticalCollision(){
-		var PI = Math.PI
 		if (this.angle <= PI){
 			this.angle = PI - this.angle;
 		}
@@ -118,7 +169,6 @@ class Ball{
 	}
 
 	horizontalCollision(){
-		var PI = Math.PI;
 		if (this.angle <= PI/2 || this.angle >= (PI * 3/2)){
 			this.angle = 2*PI - this.angle;
 		}
