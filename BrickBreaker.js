@@ -282,7 +282,7 @@ class Item{
 
 	draw(canvas){
 		canvas.beginPath();
-		canvas.fillstyle = "red";
+		canvas.fillStyle = "red";
 		canvas.arc(this.x, this.y, this.radius, 0, 2*PI, true);
 		canvas.fill();
 	}
