@@ -202,12 +202,12 @@ class Paddle{
 
 class Brick {
 	constructor(yIndex, xIndex, color, borderColor, item, count){
-		this.width = 50;
-		this.height = 25;
+		this.width = 44;
+		this.height = 20;
 		this.yIndex = yIndex;
 		this.xIndex = xIndex;
-		this.y = this.yIndex * this.height+30;
-		this.x = this.xIndex * this.width+30;
+		this.y = this.yIndex * (this.height + 7) + 30;
+		this.x = this.xIndex * (this.width + 5.5) + 30;
 		this.color = color;
 		this.borderColor=borderColor;
 		this.item = item;
@@ -223,8 +223,8 @@ class Brick {
 		canvas.strokeStyle=this.borderColor;
 		canvas.fillStyle=this.color;
 
-		canvas.strokeRect(this.x,this.y,this.width-6,this.height-4);
-		canvas.fillRect(this.x,this.y,this.width-6,this.height-4);
+		canvas.strokeRect(this.x, this.y, this.width, this.height);
+		canvas.fillRect(this.x, this.y, this.width, this.height);
 
 	}
 
