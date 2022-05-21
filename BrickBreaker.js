@@ -271,7 +271,7 @@ class Item{
 	constructor(yIndex, xIndex, collisionObject) {
 		this.xIndex = xIndex;
 		this.yIndex = yIndex;
-		this.x = this.xIndex * 50 + 15;
+		this.x = this.xIndex * 50 + 25;
 		this.y = this.yIndex * 25 + 12.5;
 
 		this.dy = 3;
@@ -314,14 +314,12 @@ class doubleBallItem extends Item{
 
 	collision() {
 		// Effect condition: Ball collision
-		console.log(this.x + " " + this.collisionObject.x);
 		if (this.collisionObject.x <= this.x && this.x <= this.collisionObject.x + this.collisionObject.size &&
 			this.y + this.radius >= this.collisionObject.y)
 		{
 			this.effect(this.balls);
 			this.isFalling = false;
 		}
-
 	}
 }
 
