@@ -45,6 +45,7 @@ class Game{
 	drawObjects(){
 		this.canvas.clearRect(0, 0, 500, 800);
 		this.drawBricks();
+
 		this.paddle.calculate(this.canvas);
 		this.paddle.draw(this.canvas);
 
@@ -231,6 +232,9 @@ class Brick {
 
 	collision(){
 		this.isDestroyed = --this.count === 0;
+		if (this.isDestroyed){
+			if (this.item != null) this.item.drop();
+		}
 	}
 }
 
