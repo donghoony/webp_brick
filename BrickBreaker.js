@@ -206,8 +206,8 @@ class Brick {
 		this.height = 25;
 		this.yIndex = yIndex;
 		this.xIndex = xIndex;
-		this.y = this.yIndex * this.height;
-		this.x = this.xIndex * this.width;
+		this.y = this.yIndex * this.height+30;
+		this.x = this.xIndex * this.width+30;
 		this.color = color;
 		this.borderColor=borderColor;
 		this.item = item;
@@ -223,8 +223,8 @@ class Brick {
 		canvas.strokeStyle=this.borderColor;
 		canvas.fillStyle=this.color;
 
-		canvas.strokeRect(this.x,this.y,this.width,this.height);
-		canvas.fillRect(this.x,this.y,this.width,this.height);
+		canvas.strokeRect(this.x,this.y,this.width-6,this.height-4);
+		canvas.fillRect(this.x,this.y,this.width-6,this.height-4);
 
 	}
 
@@ -235,11 +235,10 @@ class Brick {
 
 const levels =[
 	[
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+		[1, 1, 1, 1, 1, 1, 1, 1, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1]
 	],
 ];
