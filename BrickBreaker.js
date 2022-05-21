@@ -1,5 +1,7 @@
+
 var game, mouseX;
 const PI = Math.PI;
+
 $(document).ready(function(){
 	var context = document.getElementById("brick-board").getContext("2d");
 	$(document).mousemove(function(event){
@@ -13,6 +15,8 @@ $(document).ready(function(){
 const NOT_RUNNING = 0;
 const RUNNING = 1;
 
+
+
 class Game{
 	constructor(canvas, life, scoreboard, setting){
 		this.canvas = canvas;
@@ -22,15 +26,28 @@ class Game{
 		this.fallingItems = [];
 		this.bricks = [];
 		this.balls = [];
-		this.paddle = new Paddle(225, 3, 50);
+		this.paddle = new Paddle(225, 3, 150);
 		this.status = NOT_RUNNING;
 		this.gameLoop = null;
 	}
 
 	build(levelArray){
-		for(let i = 0; i < levelArray.length; i++){
-			for(let j = 0; j < levelArray[i].length; j++){
-				this.bricks.push(new Brick(i, j, "yellow", "green", " ", levelArray[i][j][0]));
+		let brickArray = levelArray[0];
+		let itemArray = levelArray[1];
+
+		for(let i = 0; i < brickArray.length; i++){
+			for(let j = 0; j < brickArray[i].length; j++){
+				let item = null;
+				if (itemArray[i][j] !== 0){
+					switch (itemArray[i][j]){
+						case "D":
+							item = new doubleBallItem(i, j, this.paddle);
+							break;
+						// case "P":
+						// 	item = new doublePaddleItem(i, j, this.paddle);
+					}
+				}
+				this.bricks.push(new Brick(i, j, "yellow", "green", item, brickArray[i][j]));
 			}
 		}
 		this.bricks = this.bricks.filter(brick => !brick.isDestroyed);
@@ -49,6 +66,12 @@ class Game{
 		this.paddle.calculate(this.canvas);
 		this.paddle.draw(this.canvas);
 
+		for(let i = 0; i < this.fallingItems.length; i++){
+			this.fallingItems[i].calculate();
+			this.fallingItems[i].draw(this.canvas);
+			this.fallingItems[i].collision();
+		}
+
 		for(let i = 0; i < this.balls.length; i++) {
 			this.balls[i].calculate();
 			this.balls[i].draw(this.canvas);
@@ -60,6 +83,7 @@ class Game{
 		}
 		// this.bricks 중 isDestroyed가 False인 것만 모아 새로운 배열을 만듭니다
 		this.bricks = this.bricks.filter(brick => !brick.isDestroyed);
+		this.fallingItems = this.fallingItems.filter(item => item.isFalling);
 	}
 
 	run(){
@@ -191,6 +215,7 @@ class Paddle{
 	}
 
 	draw(canvas){
+		canvas.beginPath();
 		canvas.fillStyle = "red";
 		canvas.fillRect(this.x, this.y, this.size, this.height);
 	}
@@ -222,58 +247,103 @@ class Brick {
 		// brick.yIndex, brick.xIndex를 통해 접근할 수 있습니다. yIndex는 가장 위가 0입니다.
 		// xIndex는 0 ~ 9로 한 줄에 10개의 블럭이 있습니다
 
+		canvas.beginPath();
 		canvas.strokeStyle=this.borderColor;
 		canvas.fillStyle=this.color;
 
 		canvas.strokeRect(this.x,this.y,this.width,this.height);
 		canvas.fillRect(this.x,this.y,this.width,this.height);
-
+		if (this.item != null) this.item.draw(canvas);
 	}
 
 	collision(){
 		this.isDestroyed = --this.count === 0;
 		if (this.isDestroyed){
-			if (this.item != null) this.item.drop();
+			if (this.item != null) {
+				this.item.isFalling = true;
+				game.fallingItems.push(this.item);
+			}
 		}
 	}
 }
 
 class Item{
-	constructor(x, y, collisionObject) {
-		this.x = x;
-		this.y = y;
-		this.dy = 0;
-		this.collisionObject = collisionObject;
+	constructor(yIndex, xIndex, collisionObject) {
+		this.xIndex = xIndex;
+		this.yIndex = yIndex;
+		this.x = this.xIndex * 50 + 15;
+		this.y = this.yIndex * 25 + 12.5;
 
+		this.dy = 3;
+		this.radius = 5;
+		this.isFalling = false;
+		this.collisionObject = collisionObject;
 	}
 
 	draw(canvas){
 		canvas.beginPath();
 		canvas.fillstyle = "red";
-		canvas.arc(this.x, this.y, 10, 0, 2*PI, true);
+		canvas.arc(this.x, this.y, this.radius, 0, 2*PI, true);
 		canvas.fill();
 	}
 	calculate(){
 		this.y += this.dy;
-	}
-	drop(){
-		this.dy = 5;
+		if (this.y >= 800) this.isFalling = false;
 	}
 
 	// Abstract Methods
-	collision();
-	effect();
-
+	collision(){};
+	effect(){};
 }
 
+class doubleBallItem extends Item{
+	constructor(yIndex, xIndex, paddle) {
+		super(yIndex, xIndex, paddle);
+	}
+
+	effect() {
+		let ballLength = game.balls.length;
+		for(var i = 0; i < ballLength; i++){
+			var ball = game.balls[i];
+			var newAngle = Math.random() * PI + (ball.angle - PI/2);
+			game.balls.push(
+				new Ball(ball.x, ball.y, newAngle, ball.speed, ball.radius, ball.color)
+			);
+		}
+	}
+
+	collision() {
+		// Effect condition: Ball collision
+		console.log(this.x + " " + this.collisionObject.x);
+		if (this.collisionObject.x <= this.x && this.x <= this.collisionObject.x + this.collisionObject.size &&
+			this.y + this.radius >= this.collisionObject.y)
+		{
+			this.effect(this.balls);
+			this.isFalling = false;
+		}
+
+	}
+}
 
 const levels =[
 	[
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+		// Level : Level + Item
+		[ // Level
+			[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+			[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+			[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+			[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+			[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+			[1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+		],
+		[ // Item
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
+
+		]
 	],
 ];
