@@ -196,7 +196,10 @@ class Paddle{
 	calculate(){
 		// 마우스의 위치에 따라 패들의 x좌표를 변경해 주세요
 		// 변경은 speed값만큼 변합니다, 현재 마우스 좌표는 전역변수 mouseX에 저장돼 있습니다. mouseX는 캔버스 좌표로 변환돼 있습니다!
-
+		if (this.x + this.size/2 > mouseX && this.x > 0)
+			this.x -= Math.min(this.speed, this.x + this.size/2 - mouseX);
+		else if (this.x + this.size/2 < mouseX && this.x < 500 - this.size)
+			this.x += Math.min(this.speed, mouseX - this.x);
 	}
 }
 
