@@ -19,6 +19,7 @@ class Game{
 		this.life = life;
 		this.scoreboard = scoreboard;
 		this.setting = setting;
+		this.fallingItems = [];
 		this.bricks = [];
 		this.balls = [];
 		this.paddle = new Paddle(225, 3, 50);
@@ -29,7 +30,7 @@ class Game{
 	build(levelArray){
 		for(let i = 0; i < levelArray.length; i++){
 			for(let j = 0; j < levelArray[i].length; j++){
-				this.bricks.push(new Brick(i, j, "yellow", "green", " ", levelArray[i][j]));
+				this.bricks.push(new Brick(i, j, "yellow", "green", " ", levelArray[i][j][0]));
 			}
 		}
 		this.bricks = this.bricks.filter(brick => !brick.isDestroyed);
@@ -232,6 +233,35 @@ class Brick {
 		this.isDestroyed = --this.count === 0;
 	}
 }
+
+class Item{
+	constructor(x, y, collisionObject) {
+		this.x = x;
+		this.y = y;
+		this.dy = 0;
+		this.collisionObject = collisionObject;
+
+	}
+
+	draw(canvas){
+		canvas.beginPath();
+		canvas.fillstyle = "red";
+		canvas.arc(this.x, this.y, 10, 0, 2*PI, true);
+		canvas.fill();
+	}
+	calculate(){
+		this.y += this.dy;
+	}
+	drop(){
+		this.dy = 5;
+	}
+
+	// Abstract Methods
+	collision();
+	effect();
+
+}
+
 
 const levels =[
 	[
