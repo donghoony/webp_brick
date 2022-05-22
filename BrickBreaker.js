@@ -304,7 +304,7 @@ class Item{
 
 	collision() {
 		// Effect condition: Ball collision
-		if (super.paddleCollision())
+		if (this.paddleCollision())
 		{
 			this.effect();
 			this.isFalling = false;
