@@ -268,7 +268,7 @@ class Brick {
 }
 
 class Item{
-	constructor(yIndex, xIndex, collisionObject) {
+	constructor(yIndex, xIndex, collisionObject, duration) {
 		this.xIndex = xIndex;
 		this.yIndex = yIndex;
 		this.x = this.xIndex * 50 + 25;
@@ -278,6 +278,7 @@ class Item{
 		this.radius = 5;
 		this.isFalling = false;
 		this.collisionObject = collisionObject;
+		this.duration = duration;
 	}
 
 	draw(canvas){
@@ -286,9 +287,16 @@ class Item{
 		canvas.arc(this.x, this.y, this.radius, 0, 2*PI, true);
 		canvas.fill();
 	}
+
 	calculate(){
 		this.y += this.dy;
+		if (--this.duration === 0) this.isFalling = false;
 		if (this.y >= 800) this.isFalling = false;
+	}
+
+	paddleCollision(){
+		return (this.collisionObject.x <= this.x && this.x <= this.collisionObject.x + this.collisionObject.size &&
+			this.y + this.radius >= this.collisionObject.y);
 	}
 
 	// Abstract Methods
@@ -301,6 +309,15 @@ class doubleBallItem extends Item{
 		super(yIndex, xIndex, paddle);
 	}
 
+	collision() {
+		// Effect condition: Ball collision
+		if (super.paddleCollision())
+		{
+			this.effect(this.balls);
+			this.isFalling = false;
+		}
+	}
+
 	effect() {
 		let ballLength = game.balls.length;
 		for(var i = 0; i < ballLength; i++){
@@ -309,16 +326,6 @@ class doubleBallItem extends Item{
 			game.balls.push(
 				new Ball(ball.x, ball.y, newAngle, ball.speed, ball.radius, ball.color)
 			);
-		}
-	}
-
-	collision() {
-		// Effect condition: Ball collision
-		if (this.collisionObject.x <= this.x && this.x <= this.collisionObject.x + this.collisionObject.size &&
-			this.y + this.radius >= this.collisionObject.y)
-		{
-			this.effect(this.balls);
-			this.isFalling = false;
 		}
 	}
 }
