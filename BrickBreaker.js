@@ -179,7 +179,7 @@ class Ball{
 		// 공의 angle을 -> 가장 왼쪽과 닿았을 경우 3/2*PI, 가장 오른쪽이 닿았을 때 2*PI의 값을 가지도록 (선형) 완성해 주세요
 		if(this.y + this.radius > paddle.y) {
 			if(this.x > paddle.x && this.x < (paddle.x + paddle.size)) {
-				this.angle = 2*PI -(PI * (paddle.x + paddle.size - this.x) / paddle.size);
+				this.angle = 1.25*PI + (PI/2 * (this.x - paddle.x) / paddle.size);
 			}
 		}
 	}
