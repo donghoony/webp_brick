@@ -2,7 +2,7 @@ var game, mouseX;
 const PI = Math.PI;
 $(document).ready(function(){
 	var context = document.getElementById("brick-board").getContext("2d");
-	var title_context = document.getElementById("title").getContext("2d");
+	var info_context = document.getElementById("info").getContext("2d");
 	$(document).mousemove(function(event){
 		mouseX = event.pageX - $(window).width()/2 + 250;
 	})
