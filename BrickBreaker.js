@@ -26,6 +26,7 @@ class Game{
 		this.fallingItems = [];
 		this.bricks = [];
 		this.balls = [];
+		this.activeItems = [];
 		this.paddle = new Paddle(225, 3, 150);
 		this.status = NOT_RUNNING;
 		this.gameLoop = null;
@@ -44,7 +45,7 @@ class Game{
 							item = new doubleBallItem(i, j, this.paddle);
 							break;
 						// case "P":
-						// 	item = new doublePaddleItem(i, j, this.paddle);
+						//     item = new doublePaddleItem(i, j, this.paddle, 100);
 					}
 				}
 				this.bricks.push(new Brick(i, j, "yellow", "green", item, brickArray[i][j]));
@@ -81,7 +82,11 @@ class Game{
 				this.balls[i].checkCollision(this.canvas, this.bricks[j]);
 			}
 		}
+		// 아이템 제한시간 계산
+		this.activeItems.forEach(item => {item.calculateDuration()});
+
 		// this.bricks 중 isDestroyed가 False인 것만 모아 새로운 배열을 만듭니다
+		this.activeItems = this.activeItems.filter(item => item.duration !== 0);
 		this.bricks = this.bricks.filter(brick => !brick.isDestroyed);
 		this.fallingItems = this.fallingItems.filter(item => item.isFalling);
 	}
@@ -293,7 +298,6 @@ class Item{
 
 	calculate(){
 		this.y += this.dy;
-		if (--this.duration === 0) this.isFalling = false;
 		if (this.y >= 800) this.isFalling = false;
 	}
 
@@ -302,23 +306,32 @@ class Item{
 			this.y + this.radius >= this.collisionObject.y);
 	}
 
+	calculateDuration(){
+		if (--this.duration <= 0) {
+			this.duration = 0;
+			this.deactivate();
+		}
+	}
+
 	collision() {
 		// Effect condition: Ball collision
 		if (this.paddleCollision())
 		{
-			this.effect();
+			this.activate();
+			game.activeItems.push(this);
 			this.isFalling = false;
 		}
 	}
 	// Abstract Methods
-	effect(){};
+	activate(){};
+	deactivate(){};
 }
 
 class doubleBallItem extends Item{
 	constructor(yIndex, xIndex, paddle) {
 		super(yIndex, xIndex, paddle);
 	}
-	effect() {
+	activate() {
 		let ballLength = game.balls.length;
 		for(var i = 0; i < ballLength; i++){
 			var ball = game.balls[i];
