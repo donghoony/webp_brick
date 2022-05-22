@@ -223,18 +223,21 @@ class Paddle{
 	calculate(){
 		// 마우스의 위치에 따라 패들의 x좌표를 변경해 주세요
 		// 변경은 speed값만큼 변합니다, 현재 마우스 좌표는 전역변수 mouseX에 저장돼 있습니다. mouseX는 캔버스 좌표로 변환돼 있습니다!
-
+		if (this.x + this.size/2 > mouseX && this.x > 0)
+			this.x -= Math.min(this.speed, this.x + this.size/2 - mouseX);
+		else if (this.x + this.size/2 < mouseX && this.x < 500 - this.size)
+			this.x += Math.min(this.speed, mouseX - this.x);
 	}
 }
 
 class Brick {
 	constructor(yIndex, xIndex, color, borderColor, item, count){
-		this.width = 50;
-		this.height = 25;
+		this.width = 44;
+		this.height = 20;
 		this.yIndex = yIndex;
 		this.xIndex = xIndex;
-		this.y = this.yIndex * this.height;
-		this.x = this.xIndex * this.width;
+		this.y = this.yIndex * (this.height + 7) + 30;
+		this.x = this.xIndex * (this.width + 5.5) + 30;
 		this.color = color;
 		this.borderColor=borderColor;
 		this.item = item;
@@ -254,6 +257,7 @@ class Brick {
 		canvas.strokeRect(this.x,this.y,this.width,this.height);
 		canvas.fillRect(this.x,this.y,this.width,this.height);
 		if (this.item != null) this.item.draw(canvas);
+
 	}
 
 	collision(){
@@ -348,7 +352,6 @@ const levels =[
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
-
 		]
 	],
 ];
