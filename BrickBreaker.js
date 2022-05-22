@@ -44,8 +44,8 @@ class Game{
 						case "D":
 							item = new doubleBallItem(i, j, this.paddle);
 							break;
-						// case "P":
-						//     item = new doublePaddleItem(i, j, this.paddle, 100);
+						case "P":
+						    item = new doublePaddleItem(i, j, this.paddle, 600);
 					}
 				}
 				this.bricks.push(new Brick(i, j, "yellow", "green", item, brickArray[i][j]));
@@ -343,6 +343,19 @@ class doubleBallItem extends Item{
 	}
 }
 
+
+class doublePaddleItem extends Item{
+	constructor(yIndex, xIndex, paddle,duration){
+		super(yIndex, xIndex, paddle,duration);
+	}
+	activate(){
+		game.paddle.size+=25;
+	}
+	deactivate(){
+		game.paddle.size-=25;
+	}
+}
+
 const levels =[
 	[
 		// Level : Level + Item
@@ -360,7 +373,7 @@ const levels =[
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			["D", "D", "D", "D", "D", "D", "D", "D", "D"]
+			["P", "P", "D", "D", "D", "D", "D", "P", "P"]
 		]
 	],
 ];
