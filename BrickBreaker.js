@@ -302,8 +302,15 @@ class Item{
 			this.y + this.radius >= this.collisionObject.y);
 	}
 
+	collision() {
+		// Effect condition: Ball collision
+		if (super.paddleCollision())
+		{
+			this.effect();
+			this.isFalling = false;
+		}
+	}
 	// Abstract Methods
-	collision(){};
 	effect(){};
 }
 
@@ -311,16 +318,6 @@ class doubleBallItem extends Item{
 	constructor(yIndex, xIndex, paddle) {
 		super(yIndex, xIndex, paddle);
 	}
-
-	collision() {
-		// Effect condition: Ball collision
-		if (super.paddleCollision())
-		{
-			this.effect(this.balls);
-			this.isFalling = false;
-		}
-	}
-
 	effect() {
 		let ballLength = game.balls.length;
 		for(var i = 0; i < ballLength; i++){
