@@ -30,6 +30,7 @@ class Game{
 		this.paddle = new Paddle(225, 3, 150);
 		this.status = NOT_RUNNING;
 		this.gameLoop = null;
+		this.currentLevel = -1;
 	}
 
 	build(levelArray){
@@ -61,6 +62,17 @@ class Game{
 	}
 
 	drawObjects(){
+		// Brick 확인 (다 깼으면 클리어)
+		if (this.bricks.length === 0){
+			clearInterval(this.gameLoop);
+			this.nextLevel();
+		}
+
+		// Ball 확인 (다 없으면 라이프 -)
+		if (this.balls.length === 0){
+			clearInterval(this.gameLoop);
+		}
+
 		this.canvas.clearRect(0, 0, 500, 800);
 		this.drawBricks();
 
@@ -89,24 +101,54 @@ class Game{
 		this.activeItems = this.activeItems.filter(item => item.duration !== 0);
 		this.bricks = this.bricks.filter(brick => !brick.isDestroyed);
 		this.fallingItems = this.fallingItems.filter(item => item.isFalling);
+		this.balls = this.balls.filter(ball => ball.y - ball.radius < 800);
+	}
+
+	startLevel(level){
+		// 게임을 시작하기 위한 메서드 묶음입니다
+
+		// 현재 진행중인 Interval 제거
+		clearInterval(this.gameLoop);
+		// 레벨 설정
+		this.currentLevel = level;
+		// 공 전부 지우기
+		this.balls = [];
+		// 현재 발동중인 아이템 상태 지우기
+		this.activeItems.forEach(item=>{item.deactivate();});
+		this.activeItems = [];
+		// 현재 떨어지는 아이템 지우기
+		this.fallingItems = [];
+		// 레벨 작성
+		this.build(levels[level]);
+		// 처음에는 공이 패들과 붙어 있고, 사용자가 클릭 시 위로 나아감
+		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 8, "orange", false);
+		$(document).click(function(){initBall.shoot();});
+		this.balls.push(initBall);
+		this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
+	}
+
+	nextLevel(){
+		this.startLevel(++this.currentLevel);
 	}
 
 	run(){
-		clearInterval(this.gameLoop);
-		this.build(levels[0]);
-		this.balls.push(new Ball(225, 600, Math.random() * PI * 2, 5, 8, "orange"));
-		this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
+		this.startLevel(0);
+		// clearInterval(this.gameLoop);
+		// this.build(levels[0]);
+		// this.balls.push(new Ball(225, 600, Math.random() * PI * 2, 5, 8, "orange"));
+		// this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
 	}
 }
 
 class Ball{
-	constructor(x, y, angle, speed, radius, color){
+	constructor(x, y, angle, speed, radius, color, running){
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
 		this.radius = radius;
 		this.speed = speed;
 		this.color = color;
+		this.running = running;
 	}
 
 	draw(canvas){
@@ -114,6 +156,10 @@ class Ball{
 		canvas.fillStyle = this.color;
 		canvas.arc(this.x, this.y, this.radius, 0, PI * 2, true);
 		canvas.fill();
+	}
+
+	shoot(){
+		this.running = true;
 	}
 
 	checkCollision(canvas, brick){
@@ -130,10 +176,10 @@ class Ball{
 		else if(this.y - this.radius < 0){
 			this.horizontalCollision();
 		}
-		else if (this.y + this.radius >= 800){
-			// 튕겨나오게 만들었지만, 이후에 라이프를 1 줄이는 함수를 실행할 예정입니다
-			this.horizontalCollision();
-		}
+		// else if (this.y + this.radius >= 800){
+		// 	// 튕겨나오게 만들었지만, 이후에 라이프를 1 줄이는 함수를 실행할 예정입니다
+		// 	this.horizontalCollision();
+		// }
 		if (brick === null) return;
 
 		let topBorder = brick.y;
@@ -185,6 +231,11 @@ class Ball{
 	}
 
 	calculate(){
+		if(!this.running) {
+			this.x = game.paddle.x + game.paddle.size / 2;
+			this.y = game.paddle.y - this.radius;
+			return;
+		}
 		this.x += Math.cos(this.angle) * this.speed;
 		this.y += Math.sin(this.angle) * this.speed;
 	}
@@ -337,7 +388,7 @@ class doubleBallItem extends Item{
 			var ball = game.balls[i];
 			var newAngle = Math.random() * PI + (ball.angle - PI/2);
 			game.balls.push(
-				new Ball(ball.x, ball.y, newAngle, ball.speed, ball.radius, ball.color)
+				new Ball(ball.x, ball.y, newAngle, ball.speed, ball.radius, ball.color, true)
 			);
 		}
 	}
@@ -357,23 +408,44 @@ class doublePaddleItem extends Item{
 }
 
 const levels =[
+	// Level 1
 	[
-		// Level : Level + Item
 		[ // Level
 			[1, 1, 1, 1, 1, 1, 1, 1, 1],
 			[1, 1, 1, 1, 1, 1, 1, 1, 1],
 			[1, 1, 1, 1, 1, 1, 1, 1, 1],
-			[1, 1, 1, 1, 1, 1, 1, 1, 1],
-			[1, 1, 1, 1, 1, 1, 1, 1, 1],
-			[1, 1, 1, 1, 1, 1, 1, 1, 1]
 		],
 		[ // Item
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
 			["P", "P", "D", "D", "D", "D", "D", "P", "P"]
+
 		]
 	],
+
+	// Level 2
+	[
+		[
+			[0, 0, 0, 1, 1, 1, 0, 0, 0],
+			[0, 0, 0, 1, 1, 1, 0, 0, 0],
+			[0, 0, 0, 1, 1, 1, 0, 0, 0],
+			[0, 0, 0, 1, 1, 1, 0, 0, 0],
+		],
+		[
+			[0, 0, 0, "D", "D", "D", 0, 0, 0],
+			[0, 0, 0, "D", "D", "D", 0, 0, 0],
+			[0, 0, 0, "D", "D", "D", 0, 0, 0],
+			[0, 0, 0, "D", "D", "D", 0, 0, 0],
+		]
+	],
+
+	// Level 3
+	[
+		[
+
+		],
+		[
+
+		]
+	]
 ];
