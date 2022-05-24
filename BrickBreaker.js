@@ -46,6 +46,7 @@ class Game{
 		this.status = NOT_RUNNING;
 		this.gameLoop = null;
 		this.currentLevel = -1;
+		this.score = 0;
 	}
 
 	build(levelArray){
@@ -152,6 +153,11 @@ class Game{
 		// this.build(levels[0]);
 		// this.balls.push(new Ball(225, 600, Math.random() * PI * 2, 5, 8, "orange"));
 		// this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
+	}
+
+	addScore(score){
+		this.score += score;
+		console.log(this.score);
 	}
 }
 
@@ -338,6 +344,7 @@ class Brick {
 				this.item.isFalling = true;
 				game.fallingItems.push(this.item);
 			}
+			game.addScore(100);
 		}
 	}
 }
