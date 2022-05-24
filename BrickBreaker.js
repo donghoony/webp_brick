@@ -45,7 +45,11 @@ class Game{
 							item = new doubleBallItem(i, j, this.paddle);
 							break;
 						case "P":
-						    item = new doublePaddleItem(i, j, this.paddle, 600);
+							item = new doublePaddleItem(i, j, this.paddle, 600);
+							break;
+						case "PO":
+							item = new powerBall(i, j, this.paddle, 500);
+							break;
 					}
 				}
 				this.bricks.push(new Brick(i, j, "yellow", "green", item, brickArray[i][j]));
@@ -107,6 +111,7 @@ class Ball{
 		this.radius = radius;
 		this.speed = speed;
 		this.color = color;
+		this.isPower = false;
 	}
 
 	draw(canvas){
@@ -156,22 +161,41 @@ class Ball{
 		}
 
 		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, topBorder-this.radius, rightBorder + this.radius, topBorder - this.radius)){
-			this.horizontalCollision();
-			brick.collision();
+			if(this.isPower){
+				brick.collision();
+			}
+			else{
+				this.horizontalCollision();
+				brick.collision();
+			}
 		}
 		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, bottomBorder + this.radius, rightBorder + this.radius, bottomBorder + this.radius)){
-			this.horizontalCollision();
-			brick.collision();
+			if(this.isPower){
+				brick.collision();
+			}
+			else{
+				this.horizontalCollision();
+				brick.collision();
+			}
 		}
 		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, topBorder - this.radius, leftBorder - this.radius, bottomBorder + this.radius)){
-			this.verticalCollision();
-			brick.collision();
+			if(this.isPower){
+				brick.collision();
+			}
+			else{
+				this.verticalCollision();
+				brick.collision();
+			}
 		}
 		if (cross(this.x, this.y, new_x, new_y, rightBorder + this.radius, topBorder - this.radius, rightBorder + this.radius, bottomBorder + this.radius)){
-			this.verticalCollision();
-			brick.collision();
+			if(this.isPower){
+				brick.collision();
+			}
+			else{
+				this.verticalCollision();
+				brick.collision();
+			}
 		}
-
 	}
 
 	checkPaddleCollision(canvas, paddle){
@@ -356,6 +380,26 @@ class doublePaddleItem extends Item{
 	}
 }
 
+class powerBall extends Item{
+	constructor(yIndex, xIndex, paddle, duration){
+		super(yIndex, xIndex, paddle, duration);
+	}
+	activate(){
+		for(let i=0;i<game.balls.length;i++){
+			game.balls[i].isPower = true;
+			game.balls[i].color = "red";
+		}
+		
+	}
+	deactivate(){
+		for(let i=0;i<game.balls.length;i++){
+			game.balls[i].isPower = false;
+			game.balls[i].color = "orange";
+		}
+	}
+
+}
+
 const levels =[
 	[
 		// Level : Level + Item
@@ -373,7 +417,7 @@ const levels =[
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			["P", "P", "D", "D", "D", "D", "D", "P", "P"]
+			["P", "P", "PO", "D", "D", "D", "PO", "P", "P"]
 		]
 	],
 ];
