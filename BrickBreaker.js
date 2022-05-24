@@ -62,6 +62,10 @@ class Game{
 							break;
 						case "P":
 						    item = new doublePaddleItem(i, j, this.paddle, 600);
+						    break;
+						case "S":
+							item = new speedup(i, j, this.paddle, 500);
+							break;
 					}
 				}
 				this.bricks.push(new Brick(i, j, "yellow", "green", item, brickArray[i][j]));
@@ -419,6 +423,18 @@ class doublePaddleItem extends Item{
 	}
 	deactivate(){
 		game.paddle.size-=25;
+	}
+}
+
+class speedup extends Item{
+	constructor(yIndex, xIndex, paddle, duration){
+		super(yIndex, xIndex, paddle, duration);
+	}
+	activate(){
+		game.paddle.speed += 15;
+	}
+	deactivate(){
+		game.paddle.speed -= 15;
 	}
 }
 
