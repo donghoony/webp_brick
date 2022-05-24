@@ -361,8 +361,8 @@ class doublePaddleItem extends Item{
 }
 
 class speedup extends Item{
-	constructor(yIndex, xIndex, paddle,duration){
-		super(yIndex, xIndex, paddle,duration);
+	constructor(yIndex, xIndex, paddle, duration){
+		super(yIndex, xIndex, paddle, duration);
 	}
 	activate(){
 		game.paddle.speed += 15;
