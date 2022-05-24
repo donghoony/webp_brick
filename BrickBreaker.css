@@ -1,7 +1,45 @@
+* {margin: 0; padding: 0;}
+
 #brick-board{
 	display: block;
 	width: 500px;
 	height: 800px;
 	border: 1px solid black;
-	margin: 50px auto 0 auto;
+	margin: 0 auto;
+}
+
+#main-div {
+	width: 800px;
+	margin: 0 auto;
+	position: relative;
+}
+
+#info {
+	display: block;
+	width: 500px;
+	height: 100px;
+	border: 1px solid black;
+	margin: 10px auto;
+}	/* 캔버스 id를 title에서 info로 변경했습니다. */
+
+#start {
+	display: block;
+	position: absolute;
+	top: 300px; left: 300px;
+	/* 일단 버튼의 위치는 임의로 설정했습니다. */
+	width: 150px; height: 50px;
+}
+
+#option {
+	display: block;
+	position: absolute;
+	top: 400px; left: 300px;
+	width: 150px; height: 50px;
+}
+
+#scoreboard {
+	display: block;
+	position: absolute;
+	top: 500px; left: 300px;
+	width: 150px; height: 50px;
 }
