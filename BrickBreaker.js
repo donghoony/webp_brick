@@ -4,25 +4,29 @@ const PI = Math.PI;
 
 $(document).ready(function(){
 	var context = document.getElementById("brick-board").getContext("2d");
-	var info_context = document.getElementById("info").getContext("2d");
+	// var info_context = document.getElementById("info").getContext("2d");
+	var lifeContext = document.getElementById("life").getContext("2d");	// life를 나타내는 캔버스
+	var timelimitContext = document.getElementById("timelimit").getContext("2d");	// timelimit을 나타내는 캔버스
+
 	game = new Game(context, 3, "", "");
-	var life_context = document.getElementById("life").getContext("2d");	// life를 나타내는 캔버스
-	var timelimit_context = document.getElementById("timelimit").getContext("2d");	// timelimit을 나타내는 캔버스
 
 	$(document).mousemove(function(event){
 		mouseX = event.pageX - $(window).width()/2 + 250;
-	})
+	});
+
 	$("#start").click(function() {
 		$("#start, #option, #scoreboard").css("display", "none");
 		// 게임을 시작합니다.
 		game.run();
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
+
 	$("#option").click(function() {
 		$("#start, #option, #scoreboard").css("display", "none");
 		// 환경설정으로 들어갑니다.
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
+
 	$("#scoreboard").click(function() {
 		$("#start, #option, #scoreboard").css("display", "none");
 		// 지금까지의 스코어보드를 표시합니다.
@@ -65,6 +69,7 @@ class Game{
 							break;
 						case "P":
 							item = new doublePaddleItem(i, j, this.paddle, 600);
+							break;
 					}
 				}
 				this.bricks.push(new Brick(i, j, "green", item, brickArray[i][j]));
@@ -140,7 +145,7 @@ class Game{
 		this.build(levels[level]);
 		// 처음에는 공이 패들과 붙어 있고, 사용자가 클릭 시 위로 나아감
 
-		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 12, "orange", false);
+		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 12, false);
 		this.balls.push(initBall);
 		$(document).click(function(){
 			console.log("CLICK" + " " + game.status + " " + NOT_RUNNING);
@@ -167,7 +172,6 @@ class Game{
 
 	run(){
 		this.startLevel(0);
-
 	}
 
 	addScore(score){
