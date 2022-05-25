@@ -140,7 +140,7 @@ class Game{
 		// 레벨 작성
 		this.build(levels[level]);
 		// 처음에는 공이 패들과 붙어 있고, 사용자가 클릭 시 위로 나아감
-		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 8, "orange", false);
+		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 8,  false);
 		$(document).click(function(){initBall.shoot();});
 		this.balls.push(initBall);
 		this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
@@ -152,29 +152,34 @@ class Game{
 
 	run(){
 		this.startLevel(0);
-		// clearInterval(this.gameLoop);
-		// this.build(levels[0]);
-		// this.balls.push(new Ball(225, 600, Math.random() * PI * 2, 5, 8, "orange"));
-		// this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
 	}
 }
 
+
 class Ball{
-	constructor(x, y, angle, speed, radius, color, running){
+	constructor(x, y, angle, speed, radius, running, imgSource){
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
 		this.radius = radius;
 		this.speed = speed;
-		this.color = color;
 		this.running = running;
+
+		this.rotateAngle = 0;
+		this.deltaRotateAngle = Math.random() * 0.04 + 0.04;
+		this.birdImg = new Image();
+		this.birdImg.src = "src/red.png";
 	}
 
 	draw(canvas){
-		canvas.beginPath();
-		canvas.fillStyle = this.color;
-		canvas.arc(this.x, this.y, this.radius, 0, PI * 2, true);
-		canvas.fill();
+		canvas.save();
+		canvas.translate(this.x, this.y);
+		if(this.running)
+			canvas.rotate(this.rotateAngle += this.deltaRotateAngle);
+		canvas.drawImage(this.birdImg, -this.radius, -this.radius, this.radius*2, this.radius*2);
+		canvas.restore();
+		// canvas.arc(this.x, this.y, this.radius, 0, PI * 2, true);
+		// canvas.fill();
 	}
 
 	shoot(){
@@ -413,7 +418,7 @@ class doubleBallItem extends Item{
 			var ball = game.balls[i];
 			var newAngle = Math.random() * PI + (ball.angle - PI/2);
 			game.balls.push(
-				new Ball(ball.x, ball.y, newAngle, ball.speed, ball.radius,true)
+				new Ball(ball.x, ball.y, newAngle, ball.speed, ball.radius, true)
 			);
 		}
 	}
