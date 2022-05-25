@@ -135,7 +135,7 @@ class Game{
 		// 레벨 작성
 		this.build(levels[level]);
 		// 처음에는 공이 패들과 붙어 있고, 사용자가 클릭 시 위로 나아감
-		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 12, false);
+		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 12, "orange", false);
 		this.balls.push(initBall);
 		$(document).click(function(){
 			console.log("CLICK" + " " + game.status + " " + NOT_RUNNING);
