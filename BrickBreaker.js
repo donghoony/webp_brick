@@ -349,17 +349,22 @@ class Item{
 		this.x = this.xIndex * 49.5 + 30 + 22;
 		this.y = this.yIndex * 27 + 30 + 10;
 		this.dy = 3;
-		this.radius = 5;
+		this.radius = 10;
 		this.isFalling = false;
 		this.collisionObject = collisionObject;
 		this.duration = duration;
+
+		this.image = new Image();
 	}
 
 	draw(canvas){
-		canvas.beginPath();
-		canvas.fillStyle = "red";
-		canvas.arc(this.x, this.y, this.radius, 0, 2*PI, true);
-		canvas.fill();
+		if(this.isFalling) {
+			canvas.drawImage(this.image, this.x-this.radius, this.y-this.radius, this.radius*1.5, this.radius*2);
+			// canvas.beginPath();
+			// canvas.fillStyle = "red";
+			// canvas.arc(this.x, this.y, this.radius, 0, 2 * PI, true);
+			// canvas.fill();
+		}
 	}
 
 	calculate(){
@@ -396,6 +401,7 @@ class Item{
 class doubleBallItem extends Item{
 	constructor(yIndex, xIndex, paddle) {
 		super(yIndex, xIndex, paddle);
+		this.image.src = "src/egg1.png";
 	}
 	activate() {
 		let ballLength = game.balls.length;
@@ -403,7 +409,7 @@ class doubleBallItem extends Item{
 			var ball = game.balls[i];
 			var newAngle = Math.random() * PI + (ball.angle - PI/2);
 			game.balls.push(
-				new Ball(ball.x, ball.y, newAngle, ball.speed, ball.radius, ball.color, true)
+				new Ball(ball.x, ball.y, newAngle, ball.speed, ball.radius,true)
 			);
 		}
 	}
@@ -413,12 +419,13 @@ class doubleBallItem extends Item{
 class doublePaddleItem extends Item{
 	constructor(yIndex, xIndex, paddle,duration){
 		super(yIndex, xIndex, paddle,duration);
+		this.image.src = "src/egg2.png";
 	}
 	activate(){
-		game.paddle.size+=25;
+		game.paddle.size += 25;
 	}
 	deactivate(){
-		game.paddle.size-=25;
+		game.paddle.size -= 25;
 	}
 }
 
