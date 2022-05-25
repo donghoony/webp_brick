@@ -4,14 +4,18 @@ const PI = Math.PI;
 
 $(document).ready(function(){
 	var context = document.getElementById("brick-board").getContext("2d");
+	var info_context = document.getElementById("info").getContext("2d");
+	game = new Game(context, 3, "", "");
 	var life_context = document.getElementById("life").getContext("2d");	// life를 나타내는 캔버스
 	var timelimit_context = document.getElementById("timelimit").getContext("2d");	// timelimit을 나타내는 캔버스
+
 	$(document).mousemove(function(event){
 		mouseX = event.pageX - $(window).width()/2 + 250;
 	})
 	$("#start").click(function() {
 		$("#start, #option, #scoreboard").css("display", "none");
 		// 게임을 시작합니다.
+		game.run();
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
 	$("#option").click(function() {
@@ -24,14 +28,11 @@ $(document).ready(function(){
 		// 지금까지의 스코어보드를 표시합니다.
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
-	game = new Game(context, 3, "", "");
-	game.run();
 });
 
 const NOT_RUNNING = 0;
 const RUNNING = 1;
-
-
+const READY = 2;
 
 class Game{
 	constructor(canvas, life, scoreboard, setting){
@@ -63,11 +64,7 @@ class Game{
 							item = new doubleBallItem(i, j, this.paddle);
 							break;
 						case "P":
-						    item = new doublePaddleItem(i, j, this.paddle, 600);
-						    break;
-						case "S":
-							item = new speedup(i, j, this.paddle, 500);
-							break;
+							item = new doublePaddleItem(i, j, this.paddle, 600);
 					}
 				}
 				this.bricks.push(new Brick(i, j, "green", item, brickArray[i][j]));
@@ -142,18 +139,35 @@ class Game{
 		// 레벨 작성
 		this.build(levels[level]);
 		// 처음에는 공이 패들과 붙어 있고, 사용자가 클릭 시 위로 나아감
-		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 8,  false);
-		$(document).click(function(){initBall.shoot();});
+
+		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 12, "orange", false);
 		this.balls.push(initBall);
+		$(document).click(function(){
+			console.log("CLICK" + " " + game.status + " " + NOT_RUNNING);
+			switch(game.status){
+				case NOT_RUNNING:
+					game.status = READY;
+					break;
+				case READY:
+					game.status = RUNNING;
+					initBall.shoot();
+					break;
+				case RUNNING:
+					break;
+			}
+		});
+
 		this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
 	}
 
 	nextLevel(){
+		this.status = NOT_RUNNING;
 		this.startLevel(++this.currentLevel);
 	}
 
 	run(){
 		this.startLevel(0);
+
 	}
 
 	addScore(score){
