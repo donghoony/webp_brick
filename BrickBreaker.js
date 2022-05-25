@@ -64,7 +64,7 @@ class Game{
 						    item = new doublePaddleItem(i, j, this.paddle, 600);
 					}
 				}
-				this.bricks.push(new Brick(i, j, "yellow", "green", item, brickArray[i][j]));
+				this.bricks.push(new Brick(i, j, "green", item, brickArray[i][j]));
 			}
 		}
 		this.bricks = this.bricks.filter(brick => !brick.isDestroyed);
