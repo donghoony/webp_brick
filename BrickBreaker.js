@@ -62,6 +62,10 @@ class Game{
 							break;
 						case "P":
 						    item = new doublePaddleItem(i, j, this.paddle, 600);
+						    break;
+						case "S":
+							item = new speedup(i, j, this.paddle, 500);
+							break;
 					}
 				}
 				this.bricks.push(new Brick(i, j, "yellow", "green", item, brickArray[i][j]));
@@ -354,17 +358,22 @@ class Item{
 		this.x = this.xIndex * 49.5 + 30 + 22;
 		this.y = this.yIndex * 27 + 30 + 10;
 		this.dy = 3;
-		this.radius = 5;
+		this.radius = 10;
 		this.isFalling = false;
 		this.collisionObject = collisionObject;
 		this.duration = duration;
+
+		this.image = new Image();
 	}
 
 	draw(canvas){
-		canvas.beginPath();
-		canvas.fillStyle = "red";
-		canvas.arc(this.x, this.y, this.radius, 0, 2*PI, true);
-		canvas.fill();
+		if(this.isFalling) {
+			canvas.drawImage(this.image, this.x-this.radius, this.y-this.radius, this.radius*1.5, this.radius*2);
+			// canvas.beginPath();
+			// canvas.fillStyle = "red";
+			// canvas.arc(this.x, this.y, this.radius, 0, 2 * PI, true);
+			// canvas.fill();
+		}
 	}
 
 	calculate(){
@@ -401,6 +410,7 @@ class Item{
 class doubleBallItem extends Item{
 	constructor(yIndex, xIndex, paddle) {
 		super(yIndex, xIndex, paddle);
+		this.image.src = "src/egg1.png";
 	}
 	activate() {
 		let ballLength = game.balls.length;
@@ -418,12 +428,25 @@ class doubleBallItem extends Item{
 class doublePaddleItem extends Item{
 	constructor(yIndex, xIndex, paddle,duration){
 		super(yIndex, xIndex, paddle,duration);
+		this.image.src = "src/egg2.png";
 	}
 	activate(){
-		game.paddle.size+=25;
+		game.paddle.size += 25;
 	}
 	deactivate(){
-		game.paddle.size-=25;
+		game.paddle.size -= 25;
+	}
+}
+
+class speedup extends Item{
+	constructor(yIndex, xIndex, paddle, duration){
+		super(yIndex, xIndex, paddle, duration);
+	}
+	activate(){
+		game.paddle.speed += 15;
+	}
+	deactivate(){
+		game.paddle.speed -= 15;
 	}
 }
 
