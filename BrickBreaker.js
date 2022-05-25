@@ -68,7 +68,7 @@ class Game{
 							break;
 					}
 				}
-				this.bricks.push(new Brick(i, j, "yellow", "green", item, brickArray[i][j]));
+				this.bricks.push(new Brick(i, j, "green", item, brickArray[i][j]));
 			}
 		}
 		this.bricks = this.bricks.filter(brick => !brick.isDestroyed);
@@ -311,37 +311,54 @@ class Paddle{
 }
 
 class Brick {
-	constructor(yIndex, xIndex, color, borderColor, item, count){
+	constructor(yIndex, xIndex, borderColor, item, count){
 		this.width = 44;
 		this.height = 20;
 		this.yIndex = yIndex;
 		this.xIndex = xIndex;
 		this.y = this.yIndex * (this.height + 7) + 30;
 		this.x = this.xIndex * (this.width + 5.5) + 30;
-		this.color = color;
-		this.borderColor=borderColor;
+
+		this.borderColor = borderColor;
 		this.item = item;
 		this.count = count;
 		this.isDestroyed = this.count === 0;
+
+		this.img = new Image();
+		this.img.src = "src/brick1.png";
+		this.blinkDuration = Math.random() * 400 + 350;
 	}
+
+	blink(){
+		this.blinkDuration--;
+		if (this.blinkDuration > 0) return;
+
+		if (this.img.src.endsWith("brick1.png")){
+			this.img.src = "src/brick2.png";
+			this.blinkDuration = 30;
+		}
+		else{
+			this.img.src = "src/brick1.png";
+			this.blinkDuration = Math.random() * 400 + 350;
+		}
+	}
+
 
 	draw(canvas){
 		// brick 하나를 그리는 함수를 작성해 주세요.
 		// brick.yIndex, brick.xIndex를 통해 접근할 수 있습니다. yIndex는 가장 위가 0입니다.
 		// xIndex는 0 ~ 9로 한 줄에 10개의 블럭이 있습니다
-
+		this.blink();
 		canvas.beginPath();
-		canvas.strokeStyle=this.borderColor;
-		canvas.fillStyle=this.color;
+		canvas.strokeStyle = this.borderColor;
+		canvas.drawImage(this.img, this.x, this.y, this.width, this.height);
 
 		canvas.strokeRect(this.x,this.y,this.width,this.height);
-		canvas.fillRect(this.x,this.y,this.width,this.height);
 		if (this.item != null) this.item.draw(canvas);
-
 	}
 
 	collision(){
-		this.isDestroyed = --this.count === 0;
+		this.isDestroyed = --this.count <= 0;
 		if (this.isDestroyed){
 			if (this.item != null) {
 				this.item.isFalling = true;
