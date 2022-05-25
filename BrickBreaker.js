@@ -6,6 +6,9 @@ $(document).ready(function(){
 	var context = document.getElementById("brick-board").getContext("2d");
 	var info_context = document.getElementById("info").getContext("2d");
 	game = new Game(context, 3, "", "");
+	var life_context = document.getElementById("life").getContext("2d");	// life를 나타내는 캔버스
+	var timelimit_context = document.getElementById("timelimit").getContext("2d");	// timelimit을 나타내는 캔버스
+
 	$(document).mousemove(function(event){
 		mouseX = event.pageX - $(window).width()/2 + 250;
 	})
@@ -45,6 +48,7 @@ class Game{
 		this.status = NOT_RUNNING;
 		this.gameLoop = null;
 		this.currentLevel = -1;
+		this.score = 0;
 	}
 
 	build(levelArray){
@@ -63,7 +67,7 @@ class Game{
 							item = new doublePaddleItem(i, j, this.paddle, 600);
 					}
 				}
-				this.bricks.push(new Brick(i, j, "yellow", "green", item, brickArray[i][j]));
+				this.bricks.push(new Brick(i, j, "green", item, brickArray[i][j]));
 			}
 		}
 		this.bricks = this.bricks.filter(brick => !brick.isDestroyed);
@@ -135,6 +139,7 @@ class Game{
 		// 레벨 작성
 		this.build(levels[level]);
 		// 처음에는 공이 패들과 붙어 있고, 사용자가 클릭 시 위로 나아감
+
 		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 12, "orange", false);
 		this.balls.push(initBall);
 		$(document).click(function(){
@@ -162,25 +167,40 @@ class Game{
 
 	run(){
 		this.startLevel(0);
+
+	}
+
+	addScore(score){
+		this.score += score;
+		console.log(this.score);
 	}
 }
 
+
 class Ball{
-	constructor(x, y, angle, speed, radius, color, running){
+	constructor(x, y, angle, speed, radius, running, imgSource){
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
 		this.radius = radius;
 		this.speed = speed;
-		this.color = color;
 		this.running = running;
+
+		this.rotateAngle = 0;
+		this.deltaRotateAngle = Math.random() * 0.04 + 0.04;
+		this.birdImg = new Image();
+		this.birdImg.src = "src/red.png";
 	}
 
 	draw(canvas){
-		canvas.beginPath();
-		canvas.fillStyle = this.color;
-		canvas.arc(this.x, this.y, this.radius, 0, PI * 2, true);
-		canvas.fill();
+		canvas.save();
+		canvas.translate(this.x, this.y);
+		if(this.running)
+			canvas.rotate(this.rotateAngle += this.deltaRotateAngle);
+		canvas.drawImage(this.birdImg, -this.radius, -this.radius, this.radius*2, this.radius*2);
+		canvas.restore();
+		// canvas.arc(this.x, this.y, this.radius, 0, PI * 2, true);
+		// canvas.fill();
 	}
 
 	shoot(){
@@ -312,42 +332,60 @@ class Paddle{
 }
 
 class Brick {
-	constructor(yIndex, xIndex, color, borderColor, item, count){
+	constructor(yIndex, xIndex, borderColor, item, count){
 		this.width = 44;
 		this.height = 20;
 		this.yIndex = yIndex;
 		this.xIndex = xIndex;
 		this.y = this.yIndex * (this.height + 7) + 30;
 		this.x = this.xIndex * (this.width + 5.5) + 30;
-		this.color = color;
-		this.borderColor=borderColor;
+
+		this.borderColor = borderColor;
 		this.item = item;
 		this.count = count;
 		this.isDestroyed = this.count === 0;
+
+		this.img = new Image();
+		this.img.src = "src/brick1.png";
+		this.blinkDuration = Math.random() * 400 + 350;
 	}
+
+	blink(){
+		this.blinkDuration--;
+		if (this.blinkDuration > 0) return;
+
+		if (this.img.src.endsWith("brick1.png")){
+			this.img.src = "src/brick2.png";
+			this.blinkDuration = 30;
+		}
+		else{
+			this.img.src = "src/brick1.png";
+			this.blinkDuration = Math.random() * 400 + 350;
+		}
+	}
+
 
 	draw(canvas){
 		// brick 하나를 그리는 함수를 작성해 주세요.
 		// brick.yIndex, brick.xIndex를 통해 접근할 수 있습니다. yIndex는 가장 위가 0입니다.
 		// xIndex는 0 ~ 9로 한 줄에 10개의 블럭이 있습니다
-
+		this.blink();
 		canvas.beginPath();
-		canvas.strokeStyle=this.borderColor;
-		canvas.fillStyle=this.color;
+		canvas.strokeStyle = this.borderColor;
+		canvas.drawImage(this.img, this.x, this.y, this.width, this.height);
 
 		canvas.strokeRect(this.x,this.y,this.width,this.height);
-		canvas.fillRect(this.x,this.y,this.width,this.height);
 		if (this.item != null) this.item.draw(canvas);
-
 	}
 
 	collision(){
-		this.isDestroyed = --this.count === 0;
+		this.isDestroyed = --this.count <= 0;
 		if (this.isDestroyed){
 			if (this.item != null) {
 				this.item.isFalling = true;
 				game.fallingItems.push(this.item);
 			}
+			game.addScore(100);
 		}
 	}
 }
@@ -359,17 +397,22 @@ class Item{
 		this.x = this.xIndex * 49.5 + 30 + 22;
 		this.y = this.yIndex * 27 + 30 + 10;
 		this.dy = 3;
-		this.radius = 5;
+		this.radius = 10;
 		this.isFalling = false;
 		this.collisionObject = collisionObject;
 		this.duration = duration;
+
+		this.image = new Image();
 	}
 
 	draw(canvas){
-		canvas.beginPath();
-		canvas.fillStyle = "red";
-		canvas.arc(this.x, this.y, this.radius, 0, 2*PI, true);
-		canvas.fill();
+		if(this.isFalling) {
+			canvas.drawImage(this.image, this.x-this.radius, this.y-this.radius, this.radius*1.5, this.radius*2);
+			// canvas.beginPath();
+			// canvas.fillStyle = "red";
+			// canvas.arc(this.x, this.y, this.radius, 0, 2 * PI, true);
+			// canvas.fill();
+		}
 	}
 
 	calculate(){
@@ -406,6 +449,7 @@ class Item{
 class doubleBallItem extends Item{
 	constructor(yIndex, xIndex, paddle) {
 		super(yIndex, xIndex, paddle);
+		this.image.src = "src/egg1.png";
 	}
 	activate() {
 		let ballLength = game.balls.length;
@@ -413,7 +457,7 @@ class doubleBallItem extends Item{
 			var ball = game.balls[i];
 			var newAngle = Math.random() * PI + (ball.angle - PI/2);
 			game.balls.push(
-				new Ball(ball.x, ball.y, newAngle, ball.speed, ball.radius, ball.color, true)
+				new Ball(ball.x, ball.y, newAngle, ball.speed, ball.radius, true)
 			);
 		}
 	}
@@ -423,12 +467,13 @@ class doubleBallItem extends Item{
 class doublePaddleItem extends Item{
 	constructor(yIndex, xIndex, paddle,duration){
 		super(yIndex, xIndex, paddle,duration);
+		this.image.src = "src/egg2.png";
 	}
 	activate(){
-		game.paddle.size+=25;
+		game.paddle.size += 25;
 	}
 	deactivate(){
-		game.paddle.size-=25;
+		game.paddle.size -= 25;
 	}
 }
 
