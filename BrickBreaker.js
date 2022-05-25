@@ -47,6 +47,7 @@ class Game{
 		this.status = NOT_RUNNING;
 		this.gameLoop = null;
 		this.currentLevel = -1;
+		this.score = 0;
 	}
 
 	build(levelArray){
@@ -153,6 +154,11 @@ class Game{
 
 	run(){
 		this.startLevel(0);
+	}
+
+	addScore(score){
+		this.score += score;
+		console.log(this.score);
 	}
 }
 
@@ -365,6 +371,7 @@ class Brick {
 				this.item.isFalling = true;
 				game.fallingItems.push(this.item);
 			}
+			game.addScore(100);
 		}
 	}
 }
