@@ -29,8 +29,7 @@ $(document).ready(function(){
 
 const NOT_RUNNING = 0;
 const RUNNING = 1;
-
-
+const READY = 2;
 
 class Game{
 	constructor(canvas, life, scoreboard, setting){
@@ -61,14 +60,10 @@ class Game{
 							item = new doubleBallItem(i, j, this.paddle);
 							break;
 						case "P":
-						    item = new doublePaddleItem(i, j, this.paddle, 600);
-						    break;
-						case "S":
-							item = new speedup(i, j, this.paddle, 500);
-							break;
+							item = new doublePaddleItem(i, j, this.paddle, 600);
 					}
 				}
-				this.bricks.push(new Brick(i, j, "yellow", "green", item, brickArray[i][j]));
+				this.bricks.push(new Brick(i, j, "green", item, brickArray[i][j]));
 			}
 		}
 		this.bricks = this.bricks.filter(brick => !brick.isDestroyed);
@@ -140,22 +135,33 @@ class Game{
 		// 레벨 작성
 		this.build(levels[level]);
 		// 처음에는 공이 패들과 붙어 있고, 사용자가 클릭 시 위로 나아감
-		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 8, "orange", false);
-		$(document).click(function(){initBall.shoot();});
+		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 12, false);
 		this.balls.push(initBall);
+		$(document).click(function(){
+			console.log("CLICK" + " " + game.status + " " + NOT_RUNNING);
+			switch(game.status){
+				case NOT_RUNNING:
+					game.status = READY;
+					break;
+				case READY:
+					game.status = RUNNING;
+					initBall.shoot();
+					break;
+				case RUNNING:
+					break;
+			}
+		});
+
 		this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
 	}
 
 	nextLevel(){
+		this.status = NOT_RUNNING;
 		this.startLevel(++this.currentLevel);
 	}
 
 	run(){
 		this.startLevel(0);
-		// clearInterval(this.gameLoop);
-		// this.build(levels[0]);
-		// this.balls.push(new Ball(225, 600, Math.random() * PI * 2, 5, 8, "orange"));
-		// this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
 	}
 }
 
