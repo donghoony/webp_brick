@@ -5,12 +5,14 @@ const PI = Math.PI;
 $(document).ready(function(){
 	var context = document.getElementById("brick-board").getContext("2d");
 	var info_context = document.getElementById("info").getContext("2d");
+	game = new Game(context, 3, "", "");
 	$(document).mousemove(function(event){
 		mouseX = event.pageX - $(window).width()/2 + 250;
 	})
 	$("#start").click(function() {
 		$("#start, #option, #scoreboard").css("display", "none");
 		// 게임을 시작합니다.
+		game.run();
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
 	$("#option").click(function() {
@@ -23,8 +25,6 @@ $(document).ready(function(){
 		// 지금까지의 스코어보드를 표시합니다.
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
-	game = new Game(context, 3, "", "");
-	game.run();
 });
 
 const NOT_RUNNING = 0;
