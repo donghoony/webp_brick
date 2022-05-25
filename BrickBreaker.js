@@ -4,7 +4,8 @@ const PI = Math.PI;
 
 $(document).ready(function(){
 	var context = document.getElementById("brick-board").getContext("2d");
-	var info_context = document.getElementById("info").getContext("2d");
+	var life_context = document.getElementById("life").getContext("2d");	// life를 나타내는 캔버스
+	var timelimit_context = document.getElementById("timelimit").getContext("2d");	// timelimit을 나타내는 캔버스
 	$(document).mousemove(function(event){
 		mouseX = event.pageX - $(window).width()/2 + 250;
 	})
