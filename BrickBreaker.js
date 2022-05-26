@@ -11,19 +11,19 @@ $(document).ready(function(){
 	})
 	$("#start").click(function() {
 		$("#start, #option, #scoreboard").css("display", "none");
-		game.level1bgm();
+		game.playSound("레벨1.ogg",true);
 		// 게임을 시작합니다.
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
 	$("#option").click(function() {
 		$("#start, #option, #scoreboard").css("display", "none");
-		game.bgm();
+		game.playSound("게임진행.ogg",true);
 		// 환경설정으로 들어갑니다.
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
 	$("#scoreboard").click(function() {
 		$("#start, #option, #scoreboard").css("display", "none");
-		game.bgm();
+		game.playSound("게임진행.ogg",true);
 		// 지금까지의 스코어보드를 표시합니다.
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
@@ -164,63 +164,12 @@ class Game{
 		console.log(this.score);
 	}
 
-	startbgm(){
-		var sbgm=new Audio();
-		sbgm.src="src/audio/시작화면.ogg";
-		sbgm.autoplay=true;
-		sbgm.loop=true;
-		sbgm.volume=0.7;
-	}
-
-	level1bgm(){
-		var lev1bgm=new Audio();
-		lev1bgm.src="src/audio/레벨1.ogg";
-		lev1bgm.autoplay=true;
-		lev1bgm.loop=true;
-		lev1bgm.volume=0.7;
-	}
-
-	bgm(){
-		var bgm=new Audio();
-		bgm.src="src/audio/게임진행.ogg";
-		bgm.autoplay=true;
-		bgm.loop=true;
-		bgm.volume=0.7;
-	}
-
-	ballpadd(){
-		var bbgm=new Audio();
-		bbgm.src="src/audio/ball_bounce.ogg";
-		bbgm.autoplay=true;
-		bbgm.volume=0.7;
-	}
-
-	itemball(){
-		var ibgm=new Audio();
-		ibgm.src="src/audio/big_bird.ogg";
-		ibgm.autoplay=true;
-		ibgm.volume=0.7;
-	}
-
-	itempadd(){
-		var ipbgm=new Audio();
-		ipbgm.src="src/audio/itempadd.ogg";
-		ipbgm.autoplay=true;
-		ipbgm.volume=0.7;
-	}
-
-	padditem(){
-		var pibgm=new Audio();
-		pibgm.src="src/audio/padd.ogg";
-		pibgm.autoplay=true;
-		pibgm.volume=0.7;
-	}
-
-	paddde(){
-		var pibgm=new Audio();
-		pibgm.src="src/audio/padd-.ogg";
-		pibgm.autoplay=true;
-		pibgm.volume=0.7;
+	playSound(source, loop){
+		var audio = new Audio();
+		audio.src = "src/audio/" + source;
+		audio.loop = loop;
+		audio.volume = 0.7;
+		audio.play();
 	}
 }
 
@@ -319,7 +268,7 @@ class Ball{
 		if(this.y + this.radius > paddle.y) {
 			if(this.x > paddle.x && this.x < (paddle.x + paddle.size)) {
 				this.angle = 1.25*PI + (PI/2 * (this.x - paddle.x) / paddle.size);
-				game.ballpadd();
+				game.playSound("ball_bounce.ogg",false);
 			}
 		}
 	}
@@ -433,7 +382,7 @@ class Brick {
 			if (this.item != null) {
 				this.item.isFalling = true;
 				game.fallingItems.push(this.item);
-				game.itempadd();
+				game.playSound("itempadd.ogg",false);
 			}
 			game.addScore(100);
 		}
@@ -489,7 +438,7 @@ class Item{
 			this.activate();
 			game.activeItems.push(this);
 			this.isFalling = false;
-			game.itemball();
+			game.playSound("big_bird.ogg",false);
 		}
 	}
 	// Abstract Methods
@@ -525,7 +474,7 @@ class doublePaddleItem extends Item{
 	}
 	deactivate(){
 		game.paddle.size -= 25;
-		game.padditem();
+		game.playSound("padd.ogg",false);
 	}
 }
 
@@ -538,7 +487,7 @@ class speedup extends Item{
 	}
 	deactivate(){
 		game.paddle.speed -= 15;
-		game.paddde();
+		game.playSound("padd-.ogg",false);
 	}
 }
 
