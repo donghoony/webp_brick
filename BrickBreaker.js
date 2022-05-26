@@ -6,22 +6,24 @@ $(document).ready(function(){
 	var context = document.getElementById("brick-board").getContext("2d");
 	var life_context = document.getElementById("life").getContext("2d");	// life를 나타내는 캔버스
 	var timelimit_context = document.getElementById("timelimit").getContext("2d");	// timelimit을 나타내는 캔버스
-	startbgm();
 	$(document).mousemove(function(event){
 		mouseX = event.pageX - $(window).width()/2 + 250;
 	})
 	$("#start").click(function() {
 		$("#start, #option, #scoreboard").css("display", "none");
+		game.level1bgm();
 		// 게임을 시작합니다.
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
 	$("#option").click(function() {
 		$("#start, #option, #scoreboard").css("display", "none");
+		game.bgm();
 		// 환경설정으로 들어갑니다.
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
 	$("#scoreboard").click(function() {
 		$("#start, #option, #scoreboard").css("display", "none");
+		game.bgm();
 		// 지금까지의 스코어보드를 표시합니다.
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
@@ -161,6 +163,65 @@ class Game{
 		this.score += score;
 		console.log(this.score);
 	}
+
+	startbgm(){
+		var sbgm=new Audio();
+		sbgm.src="src/audio/시작화면.ogg";
+		sbgm.autoplay=true;
+		sbgm.loop=true;
+		sbgm.volume=0.7;
+	}
+
+	level1bgm(){
+		var lev1bgm=new Audio();
+		lev1bgm.src="src/audio/레벨1.ogg";
+		lev1bgm.autoplay=true;
+		lev1bgm.loop=true;
+		lev1bgm.volume=0.7;
+	}
+
+	bgm(){
+		var bgm=new Audio();
+		bgm.src="src/audio/게임진행.ogg";
+		bgm.autoplay=true;
+		bgm.loop=true;
+		bgm.volume=0.7;
+	}
+
+	ballpadd(){
+		var bbgm=new Audio();
+		bbgm.src="src/audio/ball_bounce.ogg";
+		bbgm.autoplay=true;
+		bbgm.volume=0.7;
+	}
+
+	itemball(){
+		var ibgm=new Audio();
+		ibgm.src="src/audio/big_bird.ogg";
+		ibgm.autoplay=true;
+		ibgm.volume=0.7;
+	}
+
+	itempadd(){
+		var ipbgm=new Audio();
+		ipbgm.src="src/audio/itempadd.ogg";
+		ipbgm.autoplay=true;
+		ipbgm.volume=0.7;
+	}
+
+	padditem(){
+		var pibgm=new Audio();
+		pibgm.src="src/audio/padd.ogg";
+		pibgm.autoplay=true;
+		pibgm.volume=0.7;
+	}
+
+	paddde(){
+		var pibgm=new Audio();
+		pibgm.src="src/audio/padd-.ogg";
+		pibgm.autoplay=true;
+		pibgm.volume=0.7;
+	}
 }
 
 
@@ -258,6 +319,7 @@ class Ball{
 		if(this.y + this.radius > paddle.y) {
 			if(this.x > paddle.x && this.x < (paddle.x + paddle.size)) {
 				this.angle = 1.25*PI + (PI/2 * (this.x - paddle.x) / paddle.size);
+				game.ballpadd();
 			}
 		}
 	}
@@ -371,6 +433,7 @@ class Brick {
 			if (this.item != null) {
 				this.item.isFalling = true;
 				game.fallingItems.push(this.item);
+				game.itempadd();
 			}
 			game.addScore(100);
 		}
@@ -426,6 +489,7 @@ class Item{
 			this.activate();
 			game.activeItems.push(this);
 			this.isFalling = false;
+			game.itemball();
 		}
 	}
 	// Abstract Methods
@@ -461,6 +525,7 @@ class doublePaddleItem extends Item{
 	}
 	deactivate(){
 		game.paddle.size -= 25;
+		game.padditem();
 	}
 }
 
@@ -473,14 +538,8 @@ class speedup extends Item{
 	}
 	deactivate(){
 		game.paddle.speed -= 15;
+		game.paddde();
 	}
-}
-
-function startbgm(){
-	var sbgm=new Audio();
-	sbgm.src="music/시작화면.ogg";
-	sbgm.autoplay=true;
-	sbgm.loop=true;
 }
 
 const levels =[
