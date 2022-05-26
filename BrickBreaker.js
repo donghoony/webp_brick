@@ -6,6 +6,7 @@ $(document).ready(function(){
 	var context = document.getElementById("brick-board").getContext("2d");
 	var life_context = document.getElementById("life").getContext("2d");	// life를 나타내는 캔버스
 	var timelimit_context = document.getElementById("timelimit").getContext("2d");	// timelimit을 나타내는 캔버스
+	startbgm();
 	$(document).mousemove(function(event){
 		mouseX = event.pageX - $(window).width()/2 + 250;
 	})
@@ -473,6 +474,13 @@ class speedup extends Item{
 	deactivate(){
 		game.paddle.speed -= 15;
 	}
+}
+
+function startbgm(){
+	var sbgm=new Audio();
+	sbgm.src="music/시작화면.ogg";
+	sbgm.autoplay=true;
+	sbgm.loop=true;
 }
 
 const levels =[
