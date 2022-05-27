@@ -8,30 +8,49 @@ $(document).ready(function(){
 	var lifeContext = document.getElementById("life").getContext("2d");	// life를 나타내는 캔버스
 	var timelimitContext = document.getElementById("timelimit").getContext("2d");	// timelimit을 나타내는 캔버스
 
-	game = new Game(context, 3, "", "");
+	$("#option-btn").click(function(){
+		$("#settings").css("display", "flex");
+	});
+	game = new Game(context, 3);
+
+	$("#bgm-volume").on("input", function(){
+		game.settings.bgVolume = $(this).val() * 0.01;
+		game.runningBgm.volume = game.settings.bgVolume;
+	})
+
+	$("#sfx-volume").on("input", function(){
+		game.settings.fxVolume = $(this).val() * 0.01;
+	})
+	$("#submit-setting").on("click", function(){
+		$("#settings").hide();
+		$(".main-btn").show();
+	})
 
 	$(document).mousemove(function(event){
 		mouseX = event.pageX - $(window).width()/2 + 250;
 	});
 
-	$("#start").click(function() {
-		$("#start, #option, #scoreboard").css("display", "none");
+	$("#before-start").click(function(){
+		$(this).hide();
+		$(".main-btn").show();
 		game.playSound("레벨1.ogg",true);
+	});
+
+	$("#start-btn").click(function() {
+		$(".main-btn").css("display", "none");
 		// 게임을 시작합니다.
 		game.run();
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
 
-	$("#option").click(function() {
-		$("#start, #option, #scoreboard").css("display", "none");
-		game.playSound("게임진행.ogg",true);
+	$("#option-btn").click(function() {
+		$(".main-btn").css("display", "none");
 		// 환경설정으로 들어갑니다.
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
 
-	$("#scoreboard").click(function() {
-		$("#start, #option, #scoreboard").css("display", "none");
-		game.playSound("게임진행.ogg",true);
+	$("#scoreboard-btn").click(function() {
+		$(".main-btn").css("display", "none");
 		// 지금까지의 스코어보드를 표시합니다.
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
@@ -42,11 +61,11 @@ const RUNNING = 1;
 const READY = 2;
 
 class Game{
-	constructor(canvas, life, scoreboard, setting){
+	constructor(canvas, life){
 		this.canvas = canvas;
 		this.life = life;
-		this.scoreboard = scoreboard;
-		this.setting = setting;
+		this.scoreboard = [];
+		this.settings = new Settings();
 		this.fallingItems = [];
 		this.bricks = [];
 		this.balls = [];
@@ -56,6 +75,7 @@ class Game{
 		this.gameLoop = null;
 		this.currentLevel = -1;
 		this.score = 0;
+		this.runningBgm = null;
 	}
 
 	build(levelArray){
@@ -186,9 +206,16 @@ class Game{
 		var audio = new Audio();
 		audio.src = "src/audio/" + source;
 		audio.loop = loop;
-		audio.volume = 0.7;
+		if(loop){
+			audio.volume = this.settings.bgVolume;
+			this.runningBgm = audio;
+		}
+		else{
+			audio.volume = this.settings.fxVolume;
+		}
 		audio.play();
 	}
+
 }
 
 
@@ -506,6 +533,20 @@ class speedup extends Item{
 	deactivate(){
 		game.paddle.speed -= 15;
 		game.playSound("padd-.ogg",false);
+	}
+}
+
+class Settings{
+	constructor() {
+		this.character = 1;
+		this.fxVolume = 1;
+		this.bgVolume = 1;
+	}
+
+	openWindow(){
+		var window = $("#settings");
+		window.css("display", "block");
+		window.css({"top":"50%", "left":"50%"});
 	}
 }
 
