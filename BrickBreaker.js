@@ -78,9 +78,9 @@ class Game{
 		this.runningBgm = null;
 	}
 
-	draw(canvas){
+	draw(canvas,source){
 		var bgI=new Image();
-		bgI.src="src/backgroundimg/배경화면1.png";
+		bgI.src="src/backgroundimg/"+source;
 		canvas.drawImage(bgI,0,0,500,800);
 	}
 
@@ -114,10 +114,6 @@ class Game{
 	}
 
 	drawObjects(){
-		$("#start").click(function() {
-			this.draw(context);
-		});
-
 		// Brick 확인 (다 깼으면 클리어)
 		if (this.bricks.length === 0){
 			clearInterval(this.gameLoop);
@@ -130,6 +126,7 @@ class Game{
 		}
 
 		this.canvas.clearRect(0, 0, 500, 800);
+		game.draw(this.canvas,"배경화면1.png");
 		this.drawBricks();
 
 		this.paddle.calculate(this.canvas);
