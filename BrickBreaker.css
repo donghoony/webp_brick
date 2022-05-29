@@ -25,6 +25,7 @@
 	border: 1px solid black;
 	margin: 10px auto;
 	position: relative;
+	background-image: url("src/backgroundimg/화면1.png");
 }	/* canvas를 나타내는 것에서 div를 나타내도록 변경했습니다. */
 
 #canvas_info {
@@ -47,6 +48,7 @@
 	float: left;
 	text-align: center;
 	margin: 25px 0;
+	font-weight: bold;
 }	/* 글자로 표시된 정보를 나타내는 div입니다. */
 
 .main-btn{
