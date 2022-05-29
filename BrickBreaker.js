@@ -76,6 +76,7 @@ class Game{
 		this.currentLevel = -1;
 		this.score = 0;
 		this.runningBgm = null;
+		this.multiply = 1.0;
 	}
 
 	draw(canvas,source){
@@ -97,12 +98,13 @@ class Game{
 							item = new doubleBallItem(i, j, this.paddle);
 							break;
 						case "P":
-							item = new doublePaddleItem(i, j, this.paddle, 600);
+							item = new doublePaddleItem(i, j, this.paddle);
 							break;
 						case "PO":
-							item = new powerBall(i, j, this.paddle, 500);
+							item = new powerBall(i, j, this.paddle);
 							break;
-
+						case "S12":
+							item = new Score12(i, j, this.paddle);
 					}
 				}
 				this.bricks.push(new Brick(i, j, "green", item, brickArray[i][j]));
@@ -208,7 +210,7 @@ class Game{
 	}
 
 	addScore(score){
-		this.score += score;
+		this.score += score*game.multiply;
 		console.log(this.score);
 	}
 
@@ -516,8 +518,8 @@ class doubleBallItem extends Item{
 
 
 class doublePaddleItem extends Item{
-	constructor(yIndex, xIndex, paddle,duration){
-		super(yIndex, xIndex, paddle,duration);
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 600);
 		this.image.src = "src/egg2.png";
 	}
 	activate(){
@@ -530,14 +532,28 @@ class doublePaddleItem extends Item{
 }
 
 class speedup extends Item{
-	constructor(yIndex, xIndex, paddle, duration){
-		super(yIndex, xIndex, paddle, duration);
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 300);
 	}
 	activate(){
 		game.paddle.speed += 15;
 	}
 	deactivate(){
 		game.paddle.speed -= 15;
+		game.playSound("padd-.ogg",false);
+	}
+}
+
+class Score12 extends Item{
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 400);
+		this.image.src = "src/egg2.png";
+	}
+	activate(){
+		game.multiply += 0.2;
+	}
+	deactivate(){
+		game.multiply -= 0.2;
 		game.playSound("padd-.ogg",false);
 	}
 }
@@ -557,21 +573,18 @@ class Settings{
 }
 
 class powerBall extends Item{
-	constructor(yIndex, xIndex, paddle, duration){
-		super(yIndex, xIndex, paddle, duration);
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 200);
+		this.image.src = "src/egg4.png";
 	}
 	activate(){
-		for(let i=0;i<game.balls.length;i++){
+		for(let i=0;i<game.balls.length;i++)
 			game.balls[i].isPower = true;
-			game.balls[i].color = "red";
-		}
 		
 	}
 	deactivate(){
-		for(let i=0;i<game.balls.length;i++){
+		for(let i=0;i<game.balls.length;i++)
 			game.balls[i].isPower = false;
-			game.balls[i].color = "orange";
-		}
 	}
 
 }
@@ -587,7 +600,7 @@ const levels =[
 		[ // Item
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			["P", "P", "PO", "D", "D", "D", "PO", "P", "P"]
+			["P", "P", "S12", "PO", "D", "PO", "S12", "P", "P"]
 		]
 	],
 
