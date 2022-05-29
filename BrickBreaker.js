@@ -205,7 +205,6 @@ class Game{
 					break;
 			}
 		});
-
 		this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
 	}
 
@@ -238,6 +237,7 @@ class Game{
 	}
 
 	drawLife() {
+		this.lifeCanvas.clearRect(0, 0, 250, 40);
 		var heart = new Image();
 		heart.src = "src/heart.png";
 		for(var i = 0; i < this.life; i++){
