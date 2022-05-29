@@ -52,8 +52,13 @@
 .main-btn{
 	display: none;
 	width: 150px;
-	height: 50px;
-	margin: 10px;
+	height: 70px;
+	margin: 5px;
+	background-image: url("src/wood.png");
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	line-height: 70px;
 }
 
 #settings{
