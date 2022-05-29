@@ -161,40 +161,20 @@ class Ball{
 		}
 
 		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, topBorder-this.radius, rightBorder + this.radius, topBorder - this.radius)){
-			if(this.isPower){
-				brick.collision();
-			}
-			else{
-				this.horizontalCollision();
-				brick.collision();
-			}
+			if(!this.isPower) this.horizontalCollision();
+			brick.collision();
 		}
 		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, bottomBorder + this.radius, rightBorder + this.radius, bottomBorder + this.radius)){
-			if(this.isPower){
-				brick.collision();
-			}
-			else{
-				this.horizontalCollision();
-				brick.collision();
-			}
+			if(!this.isPower) this.horizontalCollision();
+			brick.collision();
 		}
 		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, topBorder - this.radius, leftBorder - this.radius, bottomBorder + this.radius)){
-			if(this.isPower){
-				brick.collision();
-			}
-			else{
-				this.verticalCollision();
-				brick.collision();
-			}
+			if(!this.isPower) this.horizontalCollision();
+			brick.collision();
 		}
 		if (cross(this.x, this.y, new_x, new_y, rightBorder + this.radius, topBorder - this.radius, rightBorder + this.radius, bottomBorder + this.radius)){
-			if(this.isPower){
-				brick.collision();
-			}
-			else{
-				this.verticalCollision();
-				brick.collision();
-			}
+			if(!this.isPower) this.horizontalCollision();
+			brick.collision();
 		}
 	}
 
