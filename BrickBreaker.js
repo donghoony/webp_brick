@@ -76,6 +76,7 @@ class Game{
 		this.currentLevel = -1;
 		this.score = 0;
 		this.runningBgm = null;
+		this.multiply = 1.0;
 	}
 
 	draw(canvas,source){
@@ -102,6 +103,8 @@ class Game{
 						case "PO":
 							item = new powerBall(i, j, this.paddle);
 							break;
+						case "S12":
+							item = new Score12(i, j, this.paddle);
 					}
 				}
 				this.bricks.push(new Brick(i, j, "green", item, brickArray[i][j]));
@@ -207,7 +210,7 @@ class Game{
 	}
 
 	addScore(score){
-		this.score += score;
+		this.score += score*game.multiply;
 		console.log(this.score);
 	}
 
@@ -544,6 +547,20 @@ class speedup extends Item{
 	}
 }
 
+class Score12 extends Item{
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 400);
+		this.image.src = "src/egg2.png";
+	}
+	activate(){
+		game.multiply += 0.2;
+	}
+	deactivate(){
+		game.multiply -= 0.2;
+		game.playSound("padd-.ogg",false);
+	}
+}
+
 class Settings{
 	constructor() {
 		this.character = 1;
@@ -590,7 +607,7 @@ const levels =[
 		[ // Item
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			["P", "P", "PO", "D", "D", "D", "PO", "P", "P"]
+			["P", "P", "S12", "PO", "D", "PO", "S12", "P", "P"]
 		]
 	],
 
