@@ -32,12 +32,16 @@ $(document).ready(function(){
 
 	$("#before-start").click(function(){
 		$(this).hide();
+		game.setBackgroundImage("시작화면2.jpg");
+		game.drawBackgroundImage();
 		$(".main-btn").show();
-		game.playSound("레벨1.ogg",true);
+		game.playSound("시작화면.ogg",true);
 	});
 
 	$("#start-btn").click(function() {
 		$(".main-btn").css("display", "none");
+		game.runningBgm.pause();
+		game.playSound("레벨1.ogg",true);
 		// 게임을 시작합니다.
 		game.run();
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
@@ -77,13 +81,23 @@ class Game{
 		this.currentLevel = -1;
 		this.score = 0;
 		this.runningBgm = null;
+		this.currentBackgroundImage=null;
+		this.drawBackgroundImage(this.canvas,"시작화면2.jpg");
 		this.multiply = 1.0;
 	}
 
-	draw(canvas,source){
+	setBackgroundImage(source){
 		var bgI=new Image();
 		bgI.src="src/backgroundimg/"+source;
-		canvas.drawImage(bgI,0,0,500,800);
+		bgI.onload=function(){
+			game.drawBackgroundImage();
+		}
+		this.currentBackgroundImage=bgI;
+	}
+
+	drawBackgroundImage(){
+		if(this.currentBackgroundImage!=null)
+			this.canvas.drawImage(this.currentBackgroundImage,0,0,500,800);
 	}
 
 	build(levelArray){
@@ -131,6 +145,8 @@ class Game{
 		if (this.balls.length === 0){
 			if (--this.life === 0){
 				clearInterval(this.gameLoop);
+        game.runningBgm.pause();
+			  game.playSound("레벨실패.ogg",false);
 			}
 			else{
 				this.fallingItems = [];
@@ -141,7 +157,7 @@ class Game{
 		this.drawLife();
 
 		this.canvas.clearRect(0, 0, 500, 800);
-		game.draw(this.canvas, "배경화면1.png");
+		this.drawBackgroundImage();
 		this.drawBricks();
 
 		this.paddle.calculate(this.canvas);
@@ -189,6 +205,7 @@ class Game{
 		// 레벨 작성
 		this.build(levels[level]);
 		// 처음에는 공이 패들과 붙어 있고, 사용자가 클릭 시 위로 나아감
+		game.setBackgroundImage("배경화면1.png");
 
 		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 12, false);
 		this.balls.push(initBall);
@@ -212,6 +229,7 @@ class Game{
 	nextLevel(){
 		this.status = NOT_RUNNING;
 		this.startLevel(++this.currentLevel);
+		game.playSound("레벨성공.ogg",false);
 	}
 
 	run(){
@@ -343,6 +361,7 @@ class Ball{
 			if(this.x > paddle.x && this.x < (paddle.x + paddle.size)) {
 				this.angle = 1.25*PI + (PI/2 * (this.x - paddle.x) / paddle.size);
 				game.playSound("ball_bounce.ogg",false);
+				
 			}
 		}
 	}
