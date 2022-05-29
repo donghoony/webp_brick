@@ -552,10 +552,10 @@ class Score12 extends Item{
 		this.image.src = "src/egg2.png";
 	}
 	activate(){
-		game.multiply = 1.2;
+		game.multiply += 0.2;
 	}
 	deactivate(){
-		game.multiply = 1.0;
+		game.multiply -= 0.2;
 		game.playSound("padd-.ogg",false);
 	}
 }
