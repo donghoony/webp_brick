@@ -17,6 +17,7 @@ $(document).ready(function(){
 	$("#start").click(function() {
 		$("#start, #option, #scoreboard").css("display", "none");
 		game.playSound("레벨1.ogg",true);
+		game.draw();
 		// 게임을 시작합니다.
 		game.run();
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
@@ -56,6 +57,12 @@ class Game{
 		this.gameLoop = null;
 		this.currentLevel = -1;
 		this.score = 0;
+	}
+
+	draw(canvas){
+		var bgI=new Image();
+		bgI.src="src/backgroundimg/배경화면1.png";
+		canvas.drawImage(bgI,0,0,500,800);
 	}
 
 	build(levelArray){
@@ -400,9 +407,9 @@ class Brick {
 			if (this.item != null) {
 				this.item.isFalling = true;
 				game.fallingItems.push(this.item);
-				game.playSound("itempadd.ogg",false);
 			}
 			game.addScore(100);
+			game.playSound("itempadd.ogg",false);
 		}
 	}
 }
