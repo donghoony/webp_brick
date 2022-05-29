@@ -322,27 +322,35 @@ class blueCharacter extends Ball {
 	}
 	activate() {
 		let ballLength = game.balls.length + 1;
-		for(var i = 0; i < ballLength; i++) {
-			var ball = game.balls[i];
-			var angle1 = ball.angle - (PI / 6);
-			var angle2 = ball.angle + (PI / 6);
-			game.balls.push(
-				new Ball(ball.x, ball.y, angle1, ball.speed, ball.radius, true)
-			);
-			game.balls.push(
-				new Ball(ball.x, ball.y, angle2, ball.speed, ball.radius, true)
-			);
+		$("#brick-board").click(function() {
+			for(var i = 0; i < ballLength; i++) {
+				var ball = game.balls[i];
+				var angle1 = ball.angle - (PI / 6);
+				var angle2 = ball.angle + (PI / 6);
+				game.balls.push(
+					new Ball(ball.x, ball.y, angle1, ball.speed, ball.radius, true)
+				);
+				game.balls.push(
+					new Ball(ball.x, ball.y, angle2, ball.speed, ball.radius, true)
+				);
+			}
 		}
 	}
 }	// blue는 특정 조건을 만족하면 세 마리로 분열된다.
 
 class yellowCharacter extends Ball {
-	constructor(speed, imgSource){
-		super(speed);
+	constructor(speed, imgSource, duration){
+		super(speed, imgSource);
 		this.birdImg.src = "src/yellow.png";
+		this.duration = duration;
 	}
 	activate() {
-		this.speed += 10;
+		$("#brick-board").click(function() {
+			this.speed += 10;
+		});
+	}
+	deactivate() {
+		this.speed -= 10;
 	}
 }	// yellow는 특정 조건을 만족하면 속도가 빨라진다.
 
