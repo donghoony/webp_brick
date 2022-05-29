@@ -339,8 +339,8 @@ class blueCharacter extends Ball {
 }	// blue는 특정 조건을 만족하면 세 마리로 분열된다.
 
 class yellowCharacter extends Ball {
-	constructor(speed, imgSource, duration){
-		super(speed, imgSource);
+	constructor(x, y, angle, speed, radius, running, imgSource, duration) {
+		super(x, y, angle, speed, radius, running, imgSource);
 		this.birdImg.src = "src/yellow.png";
 		this.duration = duration;
 	}
