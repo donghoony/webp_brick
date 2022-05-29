@@ -178,7 +178,6 @@ class Game{
 		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 12, false);
 		this.balls.push(initBall);
 		$(document).click(function(){
-			console.log("CLICK" + " " + game.status + " " + NOT_RUNNING);
 			switch(game.status){
 				case NOT_RUNNING:
 					game.status = READY;
