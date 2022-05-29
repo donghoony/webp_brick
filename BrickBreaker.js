@@ -211,7 +211,7 @@ class Game{
 
 	addScore(score){
 		this.score += score*game.multiply;
-		console.log(this.score);
+    $("#score").text("현재 점수 : " + this.score);
 	}
 
 	playSound(source, loop){
