@@ -311,13 +311,15 @@ class Ball{
 }
 
 class redCharacter extends Ball {
-	constructor(imgSource){
+	constructor(x, y, angle, speed, radius, running, imgSource){
+		super(x, y, angle, speed, radius, running, imgSource);
 		this.birdImg.src = "src/red.png";
 	}
 }	// red는 능력이 따로 없다.
 
 class blueCharacter extends Ball {
-	constructor(imgSource){
+	constructor(x, y, angle, speed, radius, running, imgSource){
+		super(x, y, angle, speed, radius, running, imgSource);
 		this.birdImg.src = "src/blue.png";
 	}
 	activate() {
