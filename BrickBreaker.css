@@ -1,16 +1,15 @@
 @font-face {
 	font-family: "AngryBird";
-	src: url("AngryBirdsText-Regular.ttf")
+	src: url("src/AngryBirdsText-Regular.ttf")
 }
 * {margin: 0; padding: 0;
 	font-family: AngryBird, serif;}
 
 #brick-board{
-	display: block;
+	left: 0;
+	right: 0;
 	width: 500px;
 	height: 800px;
-	border: 1px solid black;
-	margin: 0 auto;
 }
 
 #main-div {
@@ -50,24 +49,87 @@
 	margin: 25px 0;
 }	/* 글자로 표시된 정보를 나타내는 div입니다. */
 
-#start {
-	display: block;
-	position: absolute;
-	top: 300px; left: 300px;
-	/* 일단 버튼의 위치는 임의로 설정했습니다. */
-	width: 150px; height: 50px;
+.main-btn{
+	display: none;
+	width: 150px;
+	height: 50px;
+	margin: 10px;
 }
 
-#option {
-	display: block;
+#settings{
+	display: none;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
 	position: absolute;
-	top: 400px; left: 300px;
-	width: 150px; height: 50px;
+	top: 200px; left: 0;
+	width: 500px;
+	height: 400px;
+	background-color: yellow;
 }
 
-#scoreboard {
-	display: block;
+#canvas-wrapper{
+	position: relative;
+	text-align: center;
+	width: 500px;
+	height: 800px;
+	margin: 0 auto;
+	border: 1px solid black;
+}
+#button-container{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
 	position: absolute;
-	top: 500px; left: 300px;
-	width: 150px; height: 50px;
+	top: 500px; left: 0;
+	height: 300px;
+	width: 500px;
+}
+.setting-item{
+	display: flex;
+	justify-content: left;
+	align-items: center;
+	margin: 10px;
+	padding: 10px;
+	background-color: antiquewhite;
+	height: 50px;
+	line-height: 40px;
+	width: 400px;
+}
+
+.character{
+	width: 80px;
+	height: 40px;
+	background-color: aqua;
+	margin-left: 10px;
+}
+.setting-name{
+	width: 100px;
+	margin-left: 10px;
+	margin-right: 10px;
+	text-align: center;
+	height: 40px;
+	line-height: 40px;
+}
+.slider{
+	width: 250px;
+	margin-left: 10px;
+}
+#submit-setting{
+	margin: 10px;
+	background-color: red;
+	width: 100px;
+	height: 50px;
+	line-height: 50px;
+}
+#before-start{
+	position: absolute;
+	line-height: 800px;
+	font-size: 50px;
+	top: 0; left:0;
+	width: 500px; height: 800px;
+	background-color: white;
 }
