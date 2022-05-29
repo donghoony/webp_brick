@@ -99,6 +99,10 @@ class Game{
 						case "P":
 							item = new doublePaddleItem(i, j, this.paddle, 600);
 							break;
+						case "PO":
+							item = new powerBall(i, j, this.paddle, 500);
+							break;
+
 					}
 				}
 				this.bricks.push(new Brick(i, j, "green", item, brickArray[i][j]));
@@ -232,8 +236,8 @@ class Ball{
 		this.angle = angle;
 		this.radius = radius;
 		this.speed = speed;
+		this.isPower = false;
 		this.running = running;
-
 		this.rotateAngle = 0;
 		this.deltaRotateAngle = Math.random() * 0.04 + 0.04;
 		this.birdImg = new Image();
@@ -295,22 +299,21 @@ class Ball{
 		}
 
 		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, topBorder-this.radius, rightBorder + this.radius, topBorder - this.radius)){
-			this.horizontalCollision();
+			if(!this.isPower) this.horizontalCollision();
 			brick.collision();
 		}
 		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, bottomBorder + this.radius, rightBorder + this.radius, bottomBorder + this.radius)){
-			this.horizontalCollision();
+			if(!this.isPower) this.horizontalCollision();
 			brick.collision();
 		}
 		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, topBorder - this.radius, leftBorder - this.radius, bottomBorder + this.radius)){
-			this.verticalCollision();
+			if(!this.isPower) this.horizontalCollision();
 			brick.collision();
 		}
 		if (cross(this.x, this.y, new_x, new_y, rightBorder + this.radius, topBorder - this.radius, rightBorder + this.radius, bottomBorder + this.radius)){
-			this.verticalCollision();
+			if(!this.isPower) this.horizontalCollision();
 			brick.collision();
 		}
-
 	}
 
 	checkPaddleCollision(canvas, paddle){
@@ -556,6 +559,26 @@ class Settings{
 	}
 }
 
+class powerBall extends Item{
+	constructor(yIndex, xIndex, paddle, duration){
+		super(yIndex, xIndex, paddle, duration);
+	}
+	activate(){
+		for(let i=0;i<game.balls.length;i++){
+			game.balls[i].isPower = true;
+			game.balls[i].color = "red";
+		}
+		
+	}
+	deactivate(){
+		for(let i=0;i<game.balls.length;i++){
+			game.balls[i].isPower = false;
+			game.balls[i].color = "orange";
+		}
+	}
+
+}
+
 const levels =[
 	// Level 1
 	[
@@ -567,8 +590,7 @@ const levels =[
 		[ // Item
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			["P", "P", "D", "D", "D", "D", "D", "P", "P"]
-
+			["P", "P", "PO", "D", "D", "D", "PO", "P", "P"]
 		]
 	],
 
