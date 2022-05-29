@@ -8,6 +8,44 @@
 		<script src="BrickBreaker.js"></script>
 	</head>
 	<body>
-		<canvas id="brick-board" width="500" height="800"></canvas>
+		<div id="main-div">
+			<div id="info">
+				<div id="canvas_info">
+					<canvas id="life"></canvas>
+					<canvas id="timelimit"></canvas>
+				</div>
+				<div id="text_info">
+					<p id="user">사용자 이름 : </p>
+					<p id="score">현재 점수 : </p>
+				</div>
+			</div>
+			<div id="canvas-wrapper">
+				<div id="before-start">PLAY</div>
+				<canvas id="brick-board" width="500" height="800"></canvas>
+				<div id="button-container">
+					<button id="start-btn" class="main-btn">START</button>
+					<button id="option-btn" class="main-btn">SETTINGS</button>
+					<button id="scoreboard-btn" class="main-btn">SCOREBOARD</button>
+				</div>
+				<div id="settings">
+					<div class="setting-name">SETTINGS</div>
+					<div class="setting-item">
+						<div class="setting-name">Character</div>
+						<div class="character"></div>
+						<div class="character"></div>
+						<div class="character"></div>
+					</div>
+					<div class="setting-item">
+						<div class="setting-name">BGM Volume</div>
+						<input type="range" min="0" max="100" value="50" class="slider" id="bgm-volume">
+					</div>
+					<div class="setting-item">
+						<div class="setting-name">FX Volume</div>
+						<input type="range" min="0" max="100" value="50" class="slider" id="sfx-volume">
+					</div>
+					<div id="submit-setting">OK</div>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>
