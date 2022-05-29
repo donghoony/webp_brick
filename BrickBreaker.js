@@ -67,6 +67,7 @@ const READY = 2;
 class Game{
 	constructor(canvas, life){
 		this.canvas = canvas;
+		this.lifeCanvas = $("#life").get(0).getContext("2d");
 		this.life = life;
 		this.scoreboard = [];
 		this.settings = new Settings();
@@ -142,13 +143,21 @@ class Game{
 
 		// Ball 확인 (다 없으면 라이프 -)
 		if (this.balls.length === 0){
-			clearInterval(this.gameLoop);
-			game.runningBgm.pause();
-			game.playSound("레벨실패.ogg",false);
+			if (--this.life === 0){
+				clearInterval(this.gameLoop);
+        game.runningBgm.pause();
+			  game.playSound("레벨실패.ogg",false);
+			}
+			else{
+				this.fallingItems = [];
+				this.status = READY;
+				this.balls.push(new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 12, false));
+			}
 		}
+		this.drawLife();
 
 		this.canvas.clearRect(0, 0, 500, 800);
-		game.drawBackgroundImage();
+		this.drawBackgroundImage();
 		this.drawBricks();
 
 		this.paddle.calculate(this.canvas);
@@ -207,7 +216,7 @@ class Game{
 					break;
 				case READY:
 					game.status = RUNNING;
-					initBall.shoot();
+					game.balls[0].shoot();
 					break;
 				case RUNNING:
 					break;
@@ -229,7 +238,7 @@ class Game{
 
 	addScore(score){
 		this.score += score*game.multiply;
-		console.log(this.score);
+    $("#score").text("현재 점수 : " + this.score);
 	}
 
 	playSound(source, loop){
@@ -244,6 +253,15 @@ class Game{
 			audio.volume = this.settings.fxVolume;
 		}
 		audio.play();
+	}
+
+	drawLife() {
+		this.lifeCanvas.clearRect(0, 0, 250, 40);
+		var heart = new Image();
+		heart.src = "src/heart.png";
+		for(var i = 0; i < this.life; i++){
+			this.lifeCanvas.drawImage(heart, 20 + 40 * i, 0, 40, 40);
+		}
 	}
 
 }
@@ -331,7 +349,7 @@ class Ball{
 			brick.collision();
 		}
 		if (cross(this.x, this.y, new_x, new_y, rightBorder + this.radius, topBorder - this.radius, rightBorder + this.radius, bottomBorder + this.radius)){
-			if(!this.isPower) this.horizontalCollision();
+			this.verticalCollision();
 			brick.collision();
 		}
 	}
@@ -383,20 +401,18 @@ class Paddle{
 	constructor(x, speed, size){
 		this.x = x;
 		this.y = 780;
-		this.height = 3;
+		this.height = 10;
 		this.speed = speed;
 		this.size = size;
+		this.image = new Image();
+		this.image.src = "src/paddle.png";
 	}
 
 	draw(canvas){
-		canvas.beginPath();
-		canvas.fillStyle = "red";
-		canvas.fillRect(this.x, this.y, this.size, this.height);
+		canvas.drawImage(this.image, this.x, this.y, this.size, this.height);
 	}
 
 	calculate(){
-		// 마우스의 위치에 따라 패들의 x좌표를 변경해 주세요
-		// 변경은 speed값만큼 변합니다, 현재 마우스 좌표는 전역변수 mouseX에 저장돼 있습니다. mouseX는 캔버스 좌표로 변환돼 있습니다!
 		if (this.x + this.size/2 > mouseX && this.x > 0)
 			this.x -= Math.min(this.speed, this.x + this.size/2 - mouseX);
 		else if (this.x + this.size/2 < mouseX && this.x < 500 - this.size)
@@ -602,7 +618,7 @@ class powerBall extends Item{
 	activate(){
 		for(let i=0;i<game.balls.length;i++)
 			game.balls[i].isPower = true;
-		
+
 	}
 	deactivate(){
 		for(let i=0;i<game.balls.length;i++)
