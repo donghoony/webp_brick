@@ -34,7 +34,8 @@ $(document).ready(function(){
 
 	$("#before-start").click(function(){
 		$(this).hide();
-		game.draw(context,"시작화면2.jpg");
+		game.setBackgroundImage("시작화면2.jpg");
+		game.drawBackgroundImage();
 		$(".main-btn").show();
 		startbgm.play();
 	});
@@ -83,12 +84,22 @@ class Game{
 		this.currentLevel = -1;
 		this.score = 0;
 		this.runningBgm = null;
+		this.currentBackgroundImage=null;
+		this.drawBackgroundImage(this.canvas,"시작화면2.jpg");
 	}
 
-	draw(canvas,source){
+	setBackgroundImage(source){
 		var bgI=new Image();
 		bgI.src="src/backgroundimg/"+source;
-		canvas.drawImage(bgI,0,0,500,800);
+		bgI.onload=function(){
+			game.drawBackgroundImage();
+		}
+		this.currentBackgroundImage=bgI;
+	}
+
+	drawBackgroundImage(){
+		if(this.currentBackgroundImage!=null)
+			this.canvas.drawImage(this.currentBackgroundImage,0,0,500,800);
 	}
 
 	build(levelArray){
@@ -135,7 +146,8 @@ class Game{
 		}
 
 		this.canvas.clearRect(0, 0, 500, 800);
-		game.draw(this.canvas,"배경화면1.png");
+		game.setBackgroundImage("배경화면1.png");
+		game.drawBackgroundImage();
 		this.drawBricks();
 
 		this.paddle.calculate(this.canvas);
