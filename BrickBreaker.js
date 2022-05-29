@@ -30,15 +30,22 @@ $(document).ready(function(){
 		mouseX = event.pageX - $(window).width()/2 + 250;
 	});
 
+	var startbgm=game.playSound("시작화면.ogg",true);
+
 	$("#before-start").click(function(){
 		$(this).hide();
+		game.draw(context,"시작화면2.jpg");
 		$(".main-btn").show();
-		game.playSound("레벨1.ogg",true);
+		startbgm.play();
 	});
+
+	var levelbgm=game.playSound("레벨1.ogg",true);
 
 	$("#start-btn").click(function() {
 		$(".main-btn").css("display", "none");
+		startbgm.pause();
 		// 게임을 시작합니다.
+		levelbgm.play();
 		game.run();
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
@@ -123,6 +130,8 @@ class Game{
 		// Ball 확인 (다 없으면 라이프 -)
 		if (this.balls.length === 0){
 			clearInterval(this.gameLoop);
+			levelbgm.pause();
+			game.playSound("레벨실패.ogg",false).play();
 		}
 
 		this.canvas.clearRect(0, 0, 500, 800);
@@ -198,6 +207,7 @@ class Game{
 	nextLevel(){
 		this.status = NOT_RUNNING;
 		this.startLevel(++this.currentLevel);
+		game.playSound("레벨성공.ogg",false).play();
 	}
 
 	run(){
@@ -220,7 +230,8 @@ class Game{
 		else{
 			audio.volume = this.settings.fxVolume;
 		}
-		audio.play();
+
+		return audio;
 	}
 
 }
@@ -320,7 +331,8 @@ class Ball{
 		if(this.y + this.radius > paddle.y) {
 			if(this.x > paddle.x && this.x < (paddle.x + paddle.size)) {
 				this.angle = 1.25*PI + (PI/2 * (this.x - paddle.x) / paddle.size);
-				game.playSound("ball_bounce.ogg",false);
+				game.playSound("ball_bounce.ogg",false).play();
+				
 			}
 		}
 	}
@@ -436,7 +448,7 @@ class Brick {
 				game.fallingItems.push(this.item);
 			}
 			game.addScore(100);
-			game.playSound("itempadd.ogg",false);
+			game.playSound("itempadd.ogg",false).play();
 		}
 	}
 }
@@ -490,7 +502,7 @@ class Item{
 			this.activate();
 			game.activeItems.push(this);
 			this.isFalling = false;
-			game.playSound("big_bird.ogg",false);
+			game.playSound("big_bird.ogg",false).play();
 		}
 	}
 	// Abstract Methods
@@ -526,7 +538,7 @@ class doublePaddleItem extends Item{
 	}
 	deactivate(){
 		game.paddle.size -= 25;
-		game.playSound("padd.ogg",false);
+		game.playSound("padd.ogg",false).play();
 	}
 }
 
@@ -539,7 +551,7 @@ class speedup extends Item{
 	}
 	deactivate(){
 		game.paddle.speed -= 15;
-		game.playSound("padd-.ogg",false);
+		game.playSound("padd-.ogg",false).play();
 	}
 }
 
