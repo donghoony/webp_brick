@@ -581,17 +581,13 @@ class powerBall extends Item{
 		this.image.src = "src/egg4.png";
 	}
 	activate(){
-		for(let i=0;i<game.balls.length;i++){
+		for(let i=0;i<game.balls.length;i++)
 			game.balls[i].isPower = true;
-			game.balls[i].color = "red";
-		}
 		
 	}
 	deactivate(){
-		for(let i=0;i<game.balls.length;i++){
+		for(let i=0;i<game.balls.length;i++)
 			game.balls[i].isPower = false;
-			game.balls[i].color = "orange";
-		}
 	}
 
 }
