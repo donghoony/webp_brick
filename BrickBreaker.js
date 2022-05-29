@@ -78,6 +78,12 @@ class Game{
 		this.runningBgm = null;
 	}
 
+	draw(canvas,source){
+		var bgI=new Image();
+		bgI.src="src/backgroundimg/"+source;
+		canvas.drawImage(bgI,0,0,500,800);
+	}
+
 	build(levelArray){
 		let brickArray = levelArray[0];
 		let itemArray = levelArray[1];
@@ -120,6 +126,7 @@ class Game{
 		}
 
 		this.canvas.clearRect(0, 0, 500, 800);
+		game.draw(this.canvas,"배경화면1.png");
 		this.drawBricks();
 
 		this.paddle.calculate(this.canvas);
@@ -427,9 +434,9 @@ class Brick {
 			if (this.item != null) {
 				this.item.isFalling = true;
 				game.fallingItems.push(this.item);
-				game.playSound("itempadd.ogg",false);
 			}
 			game.addScore(100);
+			game.playSound("itempadd.ogg",false);
 		}
 	}
 }
