@@ -30,23 +30,19 @@ $(document).ready(function(){
 		mouseX = event.pageX - $(window).width()/2 + 250;
 	});
 
-	var startbgm=game.playSound("시작화면.ogg",true);
-
 	$("#before-start").click(function(){
 		$(this).hide();
 		game.setBackgroundImage("시작화면2.jpg");
 		game.drawBackgroundImage();
 		$(".main-btn").show();
-		startbgm.play();
+		game.playSound("시작화면.ogg",true);
 	});
-
-	var levelbgm=game.playSound("레벨1.ogg",true);
 
 	$("#start-btn").click(function() {
 		$(".main-btn").css("display", "none");
-		startbgm.pause();
+		game.runningBgm.pause();
+		game.playSound("레벨1.ogg",true);
 		// 게임을 시작합니다.
-		levelbgm.play();
 		game.run();
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
@@ -86,6 +82,7 @@ class Game{
 		this.runningBgm = null;
 		this.currentBackgroundImage=null;
 		this.drawBackgroundImage(this.canvas,"시작화면2.jpg");
+		this.multiply = 1.0;
 	}
 
 	setBackgroundImage(source){
@@ -115,8 +112,13 @@ class Game{
 							item = new doubleBallItem(i, j, this.paddle);
 							break;
 						case "P":
-							item = new doublePaddleItem(i, j, this.paddle, 600);
+							item = new doublePaddleItem(i, j, this.paddle);
 							break;
+						case "PO":
+							item = new powerBall(i, j, this.paddle);
+							break;
+						case "S12":
+							item = new Score12(i, j, this.paddle);
 					}
 				}
 				this.bricks.push(new Brick(i, j, "green", item, brickArray[i][j]));
@@ -141,12 +143,11 @@ class Game{
 		// Ball 확인 (다 없으면 라이프 -)
 		if (this.balls.length === 0){
 			clearInterval(this.gameLoop);
-			levelbgm.pause();
-			game.playSound("레벨실패.ogg",false).play();
+			game.runningBgm.pause();
+			game.playSound("레벨실패.ogg",false);
 		}
 
 		this.canvas.clearRect(0, 0, 500, 800);
-		game.setBackgroundImage("배경화면1.png");
 		game.drawBackgroundImage();
 		this.drawBricks();
 
@@ -195,11 +196,11 @@ class Game{
 		// 레벨 작성
 		this.build(levels[level]);
 		// 처음에는 공이 패들과 붙어 있고, 사용자가 클릭 시 위로 나아감
+		game.setBackgroundImage("배경화면1.png");
 
 		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 12, false);
 		this.balls.push(initBall);
 		$(document).click(function(){
-			console.log("CLICK" + " " + game.status + " " + NOT_RUNNING);
 			switch(game.status){
 				case NOT_RUNNING:
 					game.status = READY;
@@ -219,7 +220,7 @@ class Game{
 	nextLevel(){
 		this.status = NOT_RUNNING;
 		this.startLevel(++this.currentLevel);
-		game.playSound("레벨성공.ogg",false).play();
+		game.playSound("레벨성공.ogg",false);
 	}
 
 	run(){
@@ -227,7 +228,7 @@ class Game{
 	}
 
 	addScore(score){
-		this.score += score;
+		this.score += score*game.multiply;
 		console.log(this.score);
 	}
 
@@ -242,8 +243,7 @@ class Game{
 		else{
 			audio.volume = this.settings.fxVolume;
 		}
-
-		return audio;
+		audio.play();
 	}
 
 }
@@ -256,8 +256,8 @@ class Ball{
 		this.angle = angle;
 		this.radius = radius;
 		this.speed = speed;
+		this.isPower = false;
 		this.running = running;
-
 		this.rotateAngle = 0;
 		this.deltaRotateAngle = Math.random() * 0.04 + 0.04;
 		this.birdImg = new Image();
@@ -319,22 +319,21 @@ class Ball{
 		}
 
 		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, topBorder-this.radius, rightBorder + this.radius, topBorder - this.radius)){
-			this.horizontalCollision();
+			if(!this.isPower) this.horizontalCollision();
 			brick.collision();
 		}
 		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, bottomBorder + this.radius, rightBorder + this.radius, bottomBorder + this.radius)){
-			this.horizontalCollision();
+			if(!this.isPower) this.horizontalCollision();
 			brick.collision();
 		}
 		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, topBorder - this.radius, leftBorder - this.radius, bottomBorder + this.radius)){
-			this.verticalCollision();
+			if(!this.isPower) this.horizontalCollision();
 			brick.collision();
 		}
 		if (cross(this.x, this.y, new_x, new_y, rightBorder + this.radius, topBorder - this.radius, rightBorder + this.radius, bottomBorder + this.radius)){
-			this.verticalCollision();
+			if(!this.isPower) this.horizontalCollision();
 			brick.collision();
 		}
-
 	}
 
 	checkPaddleCollision(canvas, paddle){
@@ -343,7 +342,7 @@ class Ball{
 		if(this.y + this.radius > paddle.y) {
 			if(this.x > paddle.x && this.x < (paddle.x + paddle.size)) {
 				this.angle = 1.25*PI + (PI/2 * (this.x - paddle.x) / paddle.size);
-				game.playSound("ball_bounce.ogg",false).play();
+				game.playSound("ball_bounce.ogg",false);
 				
 			}
 		}
@@ -460,7 +459,7 @@ class Brick {
 				game.fallingItems.push(this.item);
 			}
 			game.addScore(100);
-			game.playSound("itempadd.ogg",false).play();
+			game.playSound("itempadd.ogg",false);
 		}
 	}
 }
@@ -514,7 +513,7 @@ class Item{
 			this.activate();
 			game.activeItems.push(this);
 			this.isFalling = false;
-			game.playSound("big_bird.ogg",false).play();
+			game.playSound("big_bird.ogg",false);
 		}
 	}
 	// Abstract Methods
@@ -541,8 +540,8 @@ class doubleBallItem extends Item{
 
 
 class doublePaddleItem extends Item{
-	constructor(yIndex, xIndex, paddle,duration){
-		super(yIndex, xIndex, paddle,duration);
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 600);
 		this.image.src = "src/egg2.png";
 	}
 	activate(){
@@ -550,20 +549,34 @@ class doublePaddleItem extends Item{
 	}
 	deactivate(){
 		game.paddle.size -= 25;
-		game.playSound("padd.ogg",false).play();
+		game.playSound("padd.ogg",false);
 	}
 }
 
 class speedup extends Item{
-	constructor(yIndex, xIndex, paddle, duration){
-		super(yIndex, xIndex, paddle, duration);
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 300);
 	}
 	activate(){
 		game.paddle.speed += 15;
 	}
 	deactivate(){
 		game.paddle.speed -= 15;
-		game.playSound("padd-.ogg",false).play();
+		game.playSound("padd-.ogg",false);
+	}
+}
+
+class Score12 extends Item{
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 400);
+		this.image.src = "src/egg2.png";
+	}
+	activate(){
+		game.multiply += 0.2;
+	}
+	deactivate(){
+		game.multiply -= 0.2;
+		game.playSound("padd-.ogg",false);
 	}
 }
 
@@ -581,6 +594,23 @@ class Settings{
 	}
 }
 
+class powerBall extends Item{
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 200);
+		this.image.src = "src/egg4.png";
+	}
+	activate(){
+		for(let i=0;i<game.balls.length;i++)
+			game.balls[i].isPower = true;
+		
+	}
+	deactivate(){
+		for(let i=0;i<game.balls.length;i++)
+			game.balls[i].isPower = false;
+	}
+
+}
+
 const levels =[
 	// Level 1
 	[
@@ -592,8 +622,7 @@ const levels =[
 		[ // Item
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			["P", "P", "D", "D", "D", "D", "D", "P", "P"]
-
+			["P", "P", "S12", "PO", "D", "PO", "S12", "P", "P"]
 		]
 	],
 
