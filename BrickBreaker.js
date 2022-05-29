@@ -97,12 +97,11 @@ class Game{
 							item = new doubleBallItem(i, j, this.paddle);
 							break;
 						case "P":
-							item = new doublePaddleItem(i, j, this.paddle, 600);
+							item = new doublePaddleItem(i, j, this.paddle);
 							break;
 						case "PO":
-							item = new powerBall(i, j, this.paddle, 500);
+							item = new powerBall(i, j, this.paddle);
 							break;
-
 					}
 				}
 				this.bricks.push(new Brick(i, j, "green", item, brickArray[i][j]));
@@ -519,8 +518,8 @@ class doubleBallItem extends Item{
 
 
 class doublePaddleItem extends Item{
-	constructor(yIndex, xIndex, paddle,duration){
-		super(yIndex, xIndex, paddle,duration);
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 600);
 		this.image.src = "src/egg2.png";
 	}
 	activate(){
@@ -533,8 +532,8 @@ class doublePaddleItem extends Item{
 }
 
 class speedup extends Item{
-	constructor(yIndex, xIndex, paddle, duration){
-		super(yIndex, xIndex, paddle, duration);
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 300);
 	}
 	activate(){
 		game.paddle.speed += 15;
@@ -560,8 +559,9 @@ class Settings{
 }
 
 class powerBall extends Item{
-	constructor(yIndex, xIndex, paddle, duration){
-		super(yIndex, xIndex, paddle, duration);
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 200);
+		this.image.src = "src/egg4.png";
 	}
 	activate(){
 		for(let i=0;i<game.balls.length;i++){
