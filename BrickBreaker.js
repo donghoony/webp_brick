@@ -17,7 +17,6 @@ $(document).ready(function(){
 	$("#start").click(function() {
 		$("#start, #option, #scoreboard").css("display", "none");
 		game.playSound("레벨1.ogg",true);
-		game.draw();
 		// 게임을 시작합니다.
 		game.run();
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
@@ -95,6 +94,10 @@ class Game{
 	}
 
 	drawObjects(){
+		$("#start").click(function() {
+			this.draw(context);
+		});
+
 		// Brick 확인 (다 깼으면 클리어)
 		if (this.bricks.length === 0){
 			clearInterval(this.gameLoop);
