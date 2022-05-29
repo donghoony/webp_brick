@@ -98,10 +98,13 @@ class Game{
 							item = new doubleBallItem(i, j, this.paddle);
 							break;
 						case "P":
-							item = new doublePaddleItem(i, j, this.paddle, 600);
+							item = new doublePaddleItem(i, j, this.paddle);
+							break;
+						case "PO":
+							item = new powerBall(i, j, this.paddle);
 							break;
 						case "S12":
-							item = new Score12(i, j, this.paddle, 500);
+							item = new Score12(i, j, this.paddle);
 					}
 				}
 				this.bricks.push(new Brick(i, j, "green", item, brickArray[i][j]));
@@ -181,7 +184,6 @@ class Game{
 		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 12, false);
 		this.balls.push(initBall);
 		$(document).click(function(){
-			console.log("CLICK" + " " + game.status + " " + NOT_RUNNING);
 			switch(game.status){
 				case NOT_RUNNING:
 					game.status = READY;
@@ -236,8 +238,8 @@ class Ball{
 		this.angle = angle;
 		this.radius = radius;
 		this.speed = speed;
+		this.isPower = false;
 		this.running = running;
-
 		this.rotateAngle = 0;
 		this.deltaRotateAngle = Math.random() * 0.04 + 0.04;
 		this.birdImg = new Image();
@@ -299,22 +301,21 @@ class Ball{
 		}
 
 		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, topBorder-this.radius, rightBorder + this.radius, topBorder - this.radius)){
-			this.horizontalCollision();
+			if(!this.isPower) this.horizontalCollision();
 			brick.collision();
 		}
 		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, bottomBorder + this.radius, rightBorder + this.radius, bottomBorder + this.radius)){
-			this.horizontalCollision();
+			if(!this.isPower) this.horizontalCollision();
 			brick.collision();
 		}
 		if (cross(this.x, this.y, new_x, new_y, leftBorder - this.radius, topBorder - this.radius, leftBorder - this.radius, bottomBorder + this.radius)){
-			this.verticalCollision();
+			if(!this.isPower) this.horizontalCollision();
 			brick.collision();
 		}
 		if (cross(this.x, this.y, new_x, new_y, rightBorder + this.radius, topBorder - this.radius, rightBorder + this.radius, bottomBorder + this.radius)){
-			this.verticalCollision();
+			if(!this.isPower) this.horizontalCollision();
 			brick.collision();
 		}
-
 	}
 
 	checkPaddleCollision(canvas, paddle){
@@ -520,8 +521,8 @@ class doubleBallItem extends Item{
 
 
 class doublePaddleItem extends Item{
-	constructor(yIndex, xIndex, paddle,duration){
-		super(yIndex, xIndex, paddle,duration);
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 600);
 		this.image.src = "src/egg2.png";
 	}
 	activate(){
@@ -534,8 +535,8 @@ class doublePaddleItem extends Item{
 }
 
 class speedup extends Item{
-	constructor(yIndex, xIndex, paddle, duration){
-		super(yIndex, xIndex, paddle, duration);
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 300);
 	}
 	activate(){
 		game.paddle.speed += 15;
@@ -547,8 +548,8 @@ class speedup extends Item{
 }
 
 class Score12 extends Item{
-	constructor(yIndex, xIndex, paddle, duration){
-		super(yIndex, xIndex, paddle, duration);
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 400);
 		this.image.src = "src/egg2.png";
 	}
 	activate(){
@@ -574,6 +575,27 @@ class Settings{
 	}
 }
 
+class powerBall extends Item{
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 200);
+		this.image.src = "src/egg4.png";
+	}
+	activate(){
+		for(let i=0;i<game.balls.length;i++){
+			game.balls[i].isPower = true;
+			game.balls[i].color = "red";
+		}
+		
+	}
+	deactivate(){
+		for(let i=0;i<game.balls.length;i++){
+			game.balls[i].isPower = false;
+			game.balls[i].color = "orange";
+		}
+	}
+
+}
+
 const levels =[
 	// Level 1
 	[
@@ -585,8 +607,7 @@ const levels =[
 		[ // Item
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			["P", "P", "S12", "D", "D", "D", "S12", "P", "P"]
-
+			["P", "P", "S12", "PO", "D", "PO", "S12", "P", "P"]
 		]
 	],
 
