@@ -63,6 +63,7 @@ const READY = 2;
 class Game{
 	constructor(canvas, life){
 		this.canvas = canvas;
+		this.lifeCanvas = $("#life").get(0).getContext("2d");
 		this.life = life;
 		this.scoreboard = [];
 		this.settings = new Settings();
@@ -128,11 +129,19 @@ class Game{
 
 		// Ball 확인 (다 없으면 라이프 -)
 		if (this.balls.length === 0){
-			clearInterval(this.gameLoop);
+			if (--this.life === 0){
+				clearInterval(this.gameLoop);
+			}
+			else{
+				this.fallingItems = [];
+				this.status = READY;
+				this.balls.push(new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 12, false));
+			}
 		}
+		this.drawLife();
 
 		this.canvas.clearRect(0, 0, 500, 800);
-		game.draw(this.canvas,"배경화면1.png");
+		game.draw(this.canvas, "배경화면1.png");
 		this.drawBricks();
 
 		this.paddle.calculate(this.canvas);
@@ -190,7 +199,7 @@ class Game{
 					break;
 				case READY:
 					game.status = RUNNING;
-					initBall.shoot();
+					game.balls[0].shoot();
 					break;
 				case RUNNING:
 					break;
@@ -226,6 +235,14 @@ class Game{
 			audio.volume = this.settings.fxVolume;
 		}
 		audio.play();
+	}
+
+	drawLife() {
+		var heart = new Image();
+		heart.src = "src/heart.png";
+		for(var i = 0; i < this.life; i++){
+			this.lifeCanvas.drawImage(heart, 20 + 40 * i, 0, 40, 40);
+		}
 	}
 }
 
