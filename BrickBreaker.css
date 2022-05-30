@@ -25,7 +25,7 @@
 	border: 1px solid black;
 	margin: 10px auto;
 	position: relative;
-        background-image: url("src/backgroundimg/화면1.png");
+	background-image: url("src/backgroundimg/화면1.png");
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
@@ -39,8 +39,6 @@
 }	/* 캔버스로 그린 정보를 나타내는 div입니다. */
 
 #canvas_info canvas {
-	width: 250px;
-	height: 40px;
 	margin: 5px 0;
 }
 
@@ -111,11 +109,19 @@
 }
 
 .character{
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	width: 80px;
-	height: 40px;
-	background-color: aqua;
+	height: 60px;
 	margin-left: 10px;
 }
+
+.bird{
+	vertical-align: middle;
+	filter: grayscale(100);
+}
+
 .setting-name{
 	width: 100px;
 	margin-left: 10px;
@@ -142,4 +148,8 @@
 	top: 0; left:0;
 	width: 500px; height: 800px;
 	background-color: white;
+}
+
+.select-radio{
+	display:none;
 }

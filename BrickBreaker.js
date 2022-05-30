@@ -5,20 +5,32 @@ const PI = Math.PI;
 $(document).ready(function(){
 	var context = document.getElementById("brick-board").getContext("2d");
 	// var info_context = document.getElementById("info").getContext("2d");
-	var lifeContext = document.getElementById("life").getContext("2d");	// life를 나타내는 캔버스
-	var timelimitContext = document.getElementById("timelimit").getContext("2d");	// timelimit을 나타내는 캔버스
-	$("#option-btn").click(function(){
-		$("#settings").css("display", "flex");
-	});
+	// var lifeContext = document.getElementById("life").getContext("2d");	// life를 나타내는 캔버스
+	// var timelimitContext = document.getElementById("timelimit").getContext("2d");	// timelimit을 나타내는 캔버스
+
 	game = new Game(context, 3);
 
+	$("#option-btn").click(function(){
+		$("#settings").css("display", "flex");
+		switch(game.settings.character){
+			case redCharacter:
+				$("#redbird").css("filter", "grayscale(0)");
+				break
+			case blueCharacter:
+				$("#bluebird").css("filter", "grayscale(0)");
+				break;
+			case yellowCharacter:
+				$("#yellowbird").css("filter", "grayscale(0)");
+				break;
+		}
+	});
 	$("#bgm-volume").on("input", function(){
-		game.settings.bgVolume = $(this).val() * 0.01;
+		game.settings.bgVolume = $(this).val() * 0.007;
 		game.runningBgm.volume = game.settings.bgVolume;
 	})
 
 	$("#sfx-volume").on("input", function(){
-		game.settings.fxVolume = $(this).val() * 0.01;
+		game.settings.fxVolume = $(this).val() * 0.007;
 	})
 	$("#submit-setting").on("click", function(){
 		$("#settings").hide();
@@ -57,6 +69,24 @@ $(document).ready(function(){
 		// 지금까지의 스코어보드를 표시합니다.
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
+
+	$("#redbird").click(function(){
+		game.settings.character = redCharacter;
+		$(".bird").css("filter", "grayscale(100)");
+		$(this).css("filter", "grayscale(0)");
+	});
+
+	$("#bluebird").click(function(){
+		game.settings.character = blueCharacter;
+		$(".bird").css("filter", "grayscale(100)");
+		$(this).css("filter", "grayscale(0)");
+	});
+
+	$("#yellowbird").click(function(){
+		game.settings.character = yellowCharacter;
+		$(".bird").css("filter", "grayscale(100)");
+		$(this).css("filter", "grayscale(0)");
+	});
 });
 
 const NOT_RUNNING = 0;
@@ -67,6 +97,7 @@ class Game{
 	constructor(canvas, life){
 		this.canvas = canvas;
 		this.lifeCanvas = $("#life").get(0).getContext("2d");
+		this.itemCanvas = $("#item-duration").get(0).getContext("2d");
 		this.life = life;
 		this.scoreboard = [];
 		this.settings = new Settings();
@@ -83,6 +114,9 @@ class Game{
 		this.currentBackgroundImage=null;
 		this.drawBackgroundImage(this.canvas,"시작화면2.jpg");
 		this.multiply = 1.0;
+
+		this.heartImage = new Image();
+		this.heartImage.src = "src/heart.png";
 	}
 
 	setBackgroundImage(source){
@@ -97,6 +131,14 @@ class Game{
 	drawBackgroundImage(){
 		if(this.currentBackgroundImage!=null)
 			this.canvas.drawImage(this.currentBackgroundImage,0,0,500,800);
+	}
+
+	drawActiveItemDuration(){
+		this.itemCanvas.clearRect(0, 0, 250, 40);
+		for(var i = 0; i < this.activeItems.length; i++){
+			this.itemCanvas.globalAlpha = (this.activeItems[i].duration / this.activeItems[i].initDuration);
+			this.itemCanvas.drawImage(this.activeItems[i].image, 10 + 30 * i, 5, 25, 30);
+		}
 	}
 
 	build(levelArray){
@@ -150,11 +192,11 @@ class Game{
 			else{
 				this.fallingItems = [];
 				this.status = READY;
-				this.balls.push(new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 12, false));
+				this.balls.push(new this.settings.character(0, 0, Math.random() * PI / 2 + 1.25 * PI, 5, 12, false));
 			}
 		}
 		this.drawLife();
-
+		this.drawActiveItemDuration();
 		this.canvas.clearRect(0, 0, 500, 800);
 		this.drawBackgroundImage();
 		this.drawBricks();
@@ -206,7 +248,7 @@ class Game{
 		// 처음에는 공이 패들과 붙어 있고, 사용자가 클릭 시 위로 나아감
 		game.setBackgroundImage("배경화면1.png");
 
-		var initBall = new Ball(0, 0, Math.random() * PI / 2 + 1.25*PI, 5, 12, false);
+		var initBall = new this.settings.character(0, 0, Math.random() * PI / 2 + 1.25 * PI, 5, 12, false);
 		this.balls.push(initBall);
 		$(document).click(function(){
 			switch(game.status){
@@ -256,10 +298,8 @@ class Game{
 
 	drawLife() {
 		this.lifeCanvas.clearRect(0, 0, 250, 40);
-		var heart = new Image();
-		heart.src = "src/heart.png";
 		for(var i = 0; i < this.life; i++){
-			this.lifeCanvas.drawImage(heart, 20 + 40 * i, 0, 40, 40);
+			this.lifeCanvas.drawImage(this.heartImage, 20 + 40 * i, 0, 40, 40);
 		}
 	}
 
@@ -278,7 +318,7 @@ class Ball{
 		this.rotateAngle = 0;
 		this.deltaRotateAngle = Math.random() * 0.04 + 0.04;
 		this.birdImg = new Image();
-		this.birdImg.src = "src/red.png";
+		this.birdImg.src = "src/" + imgSource;
 	}
 
 	draw(canvas){
@@ -288,8 +328,6 @@ class Ball{
 			canvas.rotate(this.rotateAngle += this.deltaRotateAngle);
 		canvas.drawImage(this.birdImg, -this.radius, -this.radius, this.radius*2, this.radius*2);
 		canvas.restore();
-		// canvas.arc(this.x, this.y, this.radius, 0, PI * 2, true);
-		// canvas.fill();
 	}
 
 	shoot(){
@@ -396,16 +434,14 @@ class Ball{
 }
 
 class redCharacter extends Ball {
-	constructor(x, y, angle, speed, radius, running, imgSource){
-		super(x, y, angle, speed, radius, running, imgSource);
-		this.birdImg.src = "src/red.png";
+	constructor(x, y, angle, speed, radius, running){
+		super(x, y, angle, speed, radius, running, "red.png");
 	}
-}	// red는 능력이 따로 없다.
+}
 
 class blueCharacter extends Ball {
-	constructor(x, y, angle, speed, radius, running, imgSource){
-		super(x, y, angle, speed, radius, running, imgSource);
-		this.birdImg.src = "src/blue.png";
+	constructor(x, y, angle, speed, radius, running,){
+		super(x, y, angle, speed, radius, running, "blue.png");
 	}
 	activate() {
 		let ballLength = game.balls.length + 1;
@@ -415,21 +451,20 @@ class blueCharacter extends Ball {
 				var angle1 = ball.angle - (PI / 6);
 				var angle2 = ball.angle + (PI / 6);
 				game.balls.push(
-					new Ball(ball.x, ball.y, angle1, ball.speed, ball.radius, true)
+					new blueCharacter(ball.x, ball.y, angle1, ball.speed, ball.radius, true, "blue.png")
 				);
 				game.balls.push(
-					new Ball(ball.x, ball.y, angle2, ball.speed, ball.radius, true)
+					new blueCharacter(ball.x, ball.y, angle2, ball.speed, ball.radius, true, "blue.png")
 				);
 			}
-		}
+		});
 	}
 }	// blue는 특정 조건을 만족하면 세 마리로 분열된다.
 
 class yellowCharacter extends Ball {
-	constructor(x, y, angle, speed, radius, running, imgSource, duration) {
-		super(x, y, angle, speed, radius, running, imgSource);
-		this.birdImg.src = "src/yellow.png";
-		this.duration = duration;
+	constructor(x, y, angle, speed, radius, running) {
+		super(x, y, angle, speed, radius, running, "yellow.png");
+		//this.duration = duration;
 	}
 	activate() {
 		$("#brick-board").click(function() {
@@ -535,7 +570,7 @@ class Item{
 		this.isFalling = false;
 		this.collisionObject = collisionObject;
 		this.duration = duration;
-
+		this.initDuration = duration;
 		this.image = new Image();
 	}
 
@@ -583,7 +618,7 @@ class Item{
 
 class doubleBallItem extends Item{
 	constructor(yIndex, xIndex, paddle) {
-		super(yIndex, xIndex, paddle);
+		super(yIndex, xIndex, paddle, 0);
 		this.image.src = "src/egg1.png";
 	}
 	activate() {
@@ -592,12 +627,11 @@ class doubleBallItem extends Item{
 			var ball = game.balls[i];
 			var newAngle = Math.random() * PI + (ball.angle - PI/2);
 			game.balls.push(
-				new Ball(ball.x, ball.y, newAngle, ball.speed, ball.radius, true)
+				new game.settings.character(ball.x, ball.y, newAngle, ball.speed, ball.radius, true)
 			);
 		}
 	}
 }
-
 
 class doublePaddleItem extends Item{
 	constructor(yIndex, xIndex, paddle){
@@ -642,15 +676,9 @@ class Score12 extends Item{
 
 class Settings{
 	constructor() {
-		this.character = 1;
+		this.character = redCharacter;
 		this.fxVolume = 1;
 		this.bgVolume = 1;
-	}
-
-	openWindow(){
-		var window = $("#settings");
-		window.css("display", "block");
-		window.css({"top":"50%", "left":"50%"});
 	}
 }
 
