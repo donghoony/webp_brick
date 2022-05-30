@@ -7,7 +7,6 @@ $(document).ready(function(){
 	// var info_context = document.getElementById("info").getContext("2d");
 	var lifeContext = document.getElementById("life").getContext("2d");	// life를 나타내는 캔버스
 	var timelimitContext = document.getElementById("timelimit").getContext("2d");	// timelimit을 나타내는 캔버스
-
 	$("#option-btn").click(function(){
 		$("#settings").css("display", "flex");
 	});
@@ -32,7 +31,7 @@ $(document).ready(function(){
 
 	$("#before-start").click(function(){
 		$(this).hide();
-		game.setBackgroundImage("시작화면2.jpg");
+		game.setBackgroundImage("시작화면3.png");
 		game.drawBackgroundImage();
 		$(".main-btn").show();
 		game.playSound("시작화면.ogg",true);
@@ -145,8 +144,8 @@ class Game{
 		if (this.balls.length === 0){
 			if (--this.life === 0){
 				clearInterval(this.gameLoop);
-        game.runningBgm.pause();
-			  game.playSound("레벨실패.ogg",false);
+				game.runningBgm.pause();
+				game.playSound("레벨실패.ogg",false);
 			}
 			else{
 				this.fallingItems = [];
@@ -361,7 +360,6 @@ class Ball{
 			if(this.x > paddle.x && this.x < (paddle.x + paddle.size)) {
 				this.angle = 1.25*PI + (PI/2 * (this.x - paddle.x) / paddle.size);
 				game.playSound("ball_bounce.ogg",false);
-				
 			}
 		}
 	}
@@ -628,42 +626,74 @@ class powerBall extends Item{
 }
 
 const levels =[
-	// Level 1
+	// Level 1 역기모양
 	[
 		[ // Level
 			[1, 1, 1, 1, 1, 1, 1, 1, 1],
 			[1, 1, 1, 1, 1, 1, 1, 1, 1],
+			[0, 0, 0, 0, 1, 0, 0, 0, 0],
 			[1, 1, 1, 1, 1, 1, 1, 1, 1],
+			[1, 1, 1, 1, 1, 1, 1, 1, 1],
+			[1, 0, 0, 0, 1, 0, 0, 0, 1],
 		],
 		[ // Item
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0],
-			["P", "P", "S12", "PO", "D", "PO", "S12", "P", "P"]
+			[0, "S12", 0, 0, "P", 0, "D", 0, 0],
+			[0, 0, "S12", "P", 0, 0, 0, "D", 0],
+			[0, "D", "P", 0, "S12", 0, 0, 0, 0],
+			[0, "P", 0, "PO", 0, "S12", 0, "D", 0],
+			["P", "P", "S12", 0, "D", "PO", "S12", "P", "P"],
+			[0, "D", "P", 0, "S12", 0, 0, 0, 0]
 		]
 	],
 
-	// Level 2
+	// Level 2 다이아모양
 	[
 		[
-			[0, 0, 0, 1, 1, 1, 0, 0, 0],
-			[0, 0, 0, 1, 1, 1, 0, 0, 0],
-			[0, 0, 0, 1, 1, 1, 0, 0, 0],
-			[0, 0, 0, 1, 1, 1, 0, 0, 0],
+		   [0, 0, 0, 0, 1, 0, 0, 0, 0],
+		   [0, 0, 0, 1, 1, 1, 0, 0, 0],
+		   [0, 0, 1, 1, 1, 1, 1, 0, 0],
+		   [0, 1, 1, 1, 1, 1, 1, 1, 0],
+		   [1, 1, 1, 1, 1, 1, 1, 1, 1],
+		   [0, 1, 1, 1, 1, 1, 1, 1, 0],
+		   [0, 0, 1, 1, 1, 1, 1, 0, 0],
+		   [0, 0, 0, 1, 1, 1, 0, 0, 0],
+		   [0, 0, 0, 0, 1, 0, 0, 0, 0]
 		],
 		[
-			[0, 0, 0, "D", "D", "D", 0, 0, 0],
-			[0, 0, 0, "D", "D", "D", 0, 0, 0],
-			[0, 0, 0, "D", "D", "D", 0, 0, 0],
-			[0, 0, 0, "D", "D", "D", 0, 0, 0],
+		   [0, 0, 0, 0, 1, 0, 0, 0, 0],
+		   [0, 0, 0, 1, "P", 1, 0, 0, 0],
+		   [0, 0, 1, 1, "P", 1, 1, 0, 0],
+		   [0, 1, "S12", 1, "D", 1, 1, 1, 0],
+		   [1,"P", 1,"D", "PO", "D", 1, "P", 1],
+		   [0, 1, 1, "PO", "D", "PO", 1, 1, 0],
+		   [0, 0, "S12", 1, 1, 1, "S12", 0, 0],
+		   [0, 0, 0, 1, "S12", 1, 0, 0, 0],
+		   [0, 0, 0, 0, 1, 0, 0, 0, 0]
+			
 		]
 	],
 
-	// Level 3
+	// Level 3 하트모양
 	[
 		[
-
+		    [1, 0, 0, 0, 0, 0, 0, 0, 1],
+			[1, 1, 0, 0, 0, 0, 0, 1, 1],
+			[1, 1, 1, 1, 0, 1, 1, 1, 1],
+			[0, 1, 1, 1, 1, 1, 1, 1, 0],
+			[0, 1, 1, 1, 1, 1, 1, 1, 0],
+			[0, 0, 1, 1, 1, 1, 1, 0, 0],
+			[0, 0, 0, 1, 1, 1, 0, 0, 0],
+			[0, 0, 0, 0, 1, 0, 0, 0, 0],
 		],
 		[
+		    ["P", 0, 0, 0, 0, 0, 0, 0,"P"],
+			[0, "S12", 0, 0, 0, 0, 0, "S12", 0],
+			["S12", 0, "P", 0, 0, 0, "P", 0, "S12"],
+			[0, "S12", 0, 0, "D", 0, 0, "S12", 0],
+			[0, 0, "PO", 0, "D", 0, "PO", 0, 0],
+			[0, 0, 0, "PO", "D", "PO", 0, 0, 0],
+			[0, 0, 0, 0, "D", 0, 0, 0, 0],
+			[0, 0, 0, 0, "D", 0, 0, 0, 0]
 
 		]
 	]
