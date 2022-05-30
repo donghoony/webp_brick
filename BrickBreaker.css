@@ -153,3 +153,16 @@
 .select-radio{
 	display:none;
 }
+
+#scoreboard{
+	display: none;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	position: absolute;
+	top: 200px; left: 0;
+	width: 500px;
+	height: 400px;
+	background-color: yellow;
+}

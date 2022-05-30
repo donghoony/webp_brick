@@ -11,6 +11,7 @@ $(document).ready(function(){
 	game = new Game(context, 3);
 
 	$("#option-btn").click(function(){
+		$(".main-btn").css("display", "none");
 		$("#settings").css("display", "flex");
 		switch(game.settings.character){
 			case redCharacter:
@@ -58,16 +59,9 @@ $(document).ready(function(){
 		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
 	});
 
-	$("#option-btn").click(function() {
-		$(".main-btn").css("display", "none");
-		// 환경설정으로 들어갑니다.
-		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
-	});
-
 	$("#scoreboard-btn").click(function() {
 		$(".main-btn").css("display", "none");
-		// 지금까지의 스코어보드를 표시합니다.
-		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
+		$("#scoreboard").css("display", "flex");
 	});
 
 	$("#redbird").click(function(){
