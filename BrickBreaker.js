@@ -15,7 +15,7 @@ $(document).ready(function(){
 		switch(game.settings.character){
 			case redCharacter:
 				$("#redbird").css("filter", "grayscale(0)");
-				break
+				break;
 			case blueCharacter:
 				$("#bluebird").css("filter", "grayscale(0)");
 				break;
@@ -440,41 +440,67 @@ class redCharacter extends Ball {
 }
 
 class blueCharacter extends Ball {
-	constructor(x, y, angle, speed, radius, running,){
+	constructor(x, y, angle, speed, radius, running, duration){
 		super(x, y, angle, speed, radius, running, "blue.png");
+		this.duration = duration;
 	}
+
+	calculateDuration(){
+		if (--this.duration <= 0) {
+			this.duration = 0;
+			this.deactivate();
+		}
+	}
+
+	screenClick() {
+		$("#brick-board").click(function() {
+			this.activate();
+		});
+	}
+
 	activate() {
 		let ballLength = game.balls.length + 1;
-		$("#brick-board").click(function() {
-			for(var i = 0; i < ballLength; i++) {
-				var ball = game.balls[i];
-				var angle1 = ball.angle - (PI / 6);
-				var angle2 = ball.angle + (PI / 6);
-				game.balls.push(
-					new blueCharacter(ball.x, ball.y, angle1, ball.speed, ball.radius, true, "blue.png")
-				);
-				game.balls.push(
-					new blueCharacter(ball.x, ball.y, angle2, ball.speed, ball.radius, true, "blue.png")
-				);
-			}
-		});
+		for(var i = 0; i < ballLength; i++) {
+			var ball = game.balls[i];
+			var angle1 = ball.angle - (PI / 6);
+			var angle2 = ball.angle + (PI / 6);
+			game.balls.push(
+				new blueCharacter(ball.x, ball.y, angle1, ball.speed, ball.radius, true, "blue.png")
+			);
+			game.balls.push(
+				new blueCharacter(ball.x, ball.y, angle2, ball.speed, ball.radius, true, "blue.png")
+			);
+		}
 	}
 }	// blue는 특정 조건을 만족하면 세 마리로 분열된다.
 
 class yellowCharacter extends Ball {
-	constructor(x, y, angle, speed, radius, running) {
+	constructor(x, y, angle, speed, radius, running, duration) {
 		super(x, y, angle, speed, radius, running, "yellow.png");
-		//this.duration = duration;
+		this.duration = duration;
 	}
-	activate() {
+
+	calculateDuration(){
+		if (--this.duration <= 0) {
+			this.duration = 0;
+			this.deactivate();
+		}
+	}
+
+	screenClick() {
 		$("#brick-board").click(function() {
-			this.speed += 10;
+			this.activate();
 		});
 	}
-	deactivate() {
-		this.speed -= 10;
+
+	activate() {
+		game.paddle.speed += 10;
 	}
-}	// yellow는 특정 조건을 만족하면 속도가 빨라진다.
+
+	deactivate() {
+		game.paddle.speed -= 10;
+	}
+}	// yellow는 특정 조건을 만족하면 paddle의 속도가 빨라진다.
 
 class Paddle{
 	constructor(x, speed, size){
