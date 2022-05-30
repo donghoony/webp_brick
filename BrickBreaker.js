@@ -190,6 +190,8 @@ class Game{
 				game.playSound("레벨실패.ogg",false);
 			}
 			else{
+				this.activeItems.forEach(item=>{item.deactivate();});
+				this.activeItems = [];
 				this.fallingItems = [];
 				this.status = READY;
 				this.balls.push(new this.settings.character(0, 0, Math.random() * PI / 2 + 1.25 * PI, 5, 12, false));
@@ -279,7 +281,7 @@ class Game{
 
 	addScore(score){
 		this.score += score*game.multiply;
-    $("#score").text("현재 점수 : " + this.score);
+    $("#score").text(this.score);
 	}
 
 	playSound(source, loop){
