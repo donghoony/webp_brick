@@ -3,7 +3,10 @@
 	src: url("src/AngryBirdsText-Regular.ttf")
 }
 * {margin: 0; padding: 0;
-	font-family: AngryBird, serif;}
+	font-family: AngryBird, serif;
+	font-weight: bold;
+	cursor: default;
+}
 
 #brick-board{
 	left: 0;
@@ -22,7 +25,7 @@
 	display: block;
 	width: 500px;
 	height: 100px;
-	border: 1px solid black;
+	border: 5px solid saddlebrown;
 	margin: 10px auto;
 	position: relative;
 	background-image: url("src/backgroundimg/화면1.png");
@@ -49,7 +52,6 @@
 	float: left;
 	text-align: center;
 	margin: 25px 0;
-	font-weight: bold;
 }	/* 글자로 표시된 정보를 나타내는 div입니다. */
 
 .main-btn{
@@ -62,6 +64,19 @@
 	background-position: center;
 	background-repeat: no-repeat;
 	line-height: 70px;
+	font-size: 18px;
+}
+
+
+#submit-setting{
+	width: 100px;
+	height: 70px;
+	background-image: url("src/wood.png");
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	line-height: 70px;
+	font-size: 18px;
 }
 
 #settings{
@@ -74,7 +89,7 @@
 	top: 200px; left: 0;
 	width: 500px;
 	height: 400px;
-	background-color: yellow;
+	background-color: rgba(255, 255, 255, 0.5);
 }
 
 #canvas-wrapper{
@@ -83,7 +98,7 @@
 	width: 500px;
 	height: 800px;
 	margin: 0 auto;
-	border: 1px solid black;
+	border: 5px solid saddlebrown;
 }
 #button-container{
 	display: flex;
@@ -134,13 +149,7 @@
 	width: 250px;
 	margin-left: 10px;
 }
-#submit-setting{
-	margin: 10px;
-	background-color: red;
-	width: 100px;
-	height: 50px;
-	line-height: 50px;
-}
+
 #before-start{
 	position: absolute;
 	line-height: 800px;

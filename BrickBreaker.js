@@ -66,19 +66,25 @@ $(document).ready(function(){
 
 	$("#redbird").click(function(){
 		game.settings.character = redCharacter;
+		game.settings.characterNumber = 1;
 		$(".bird").css("filter", "grayscale(100)");
+		game.playSound("select1.ogg");
 		$(this).css("filter", "grayscale(0)");
 	});
 
 	$("#bluebird").click(function(){
 		game.settings.character = blueCharacter;
+		game.settings.characterNumber = 2;
 		$(".bird").css("filter", "grayscale(100)");
+		game.playSound("select2.ogg");
 		$(this).css("filter", "grayscale(0)");
 	});
 
 	$("#yellowbird").click(function(){
 		game.settings.character = yellowCharacter;
+		game.settings.characterNumber = 3;
 		$(".bird").css("filter", "grayscale(100)");
+		game.playSound("select3.ogg");
 		$(this).css("filter", "grayscale(0)");
 	});
 });
@@ -315,6 +321,7 @@ class Ball{
 		this.deltaRotateAngle = Math.random() * 0.04 + 0.04;
 		this.birdImg = new Image();
 		this.birdImg.src = "src/" + imgSource;
+
 	}
 
 	draw(canvas){
@@ -327,6 +334,7 @@ class Ball{
 	}
 
 	shoot(){
+		game.playSound("start" + game.settings.characterNumber + ".ogg", false);
 		this.running = true;
 	}
 
@@ -415,6 +423,7 @@ class Ball{
 		else{
 			this.angle = 2*PI - (this.angle - PI);
 		}
+		game.playSound(game.settings.characterNumber + "-" + Math.floor(Math.random() * 4 + 1) + ".ogg", false);
 		this.calculate();
 	}
 
@@ -425,6 +434,7 @@ class Ball{
 		else{
 			this.angle = 3/2*PI - (this.angle - PI/2);
 		}
+		game.playSound(game.settings.characterNumber + "-" + Math.floor(Math.random() * 4 + 1) + ".ogg", false);
 		this.calculate();
 	}
 }
@@ -550,7 +560,7 @@ class Brick {
 				game.fallingItems.push(this.item);
 			}
 			game.addScore(100);
-			game.playSound("itempadd.ogg",false);
+			game.playSound("damage" + (Math.floor(Math.random() * 8) + 1) + ".ogg",false);
 		}
 	}
 }
@@ -673,6 +683,7 @@ class Score12 extends Item{
 class Settings{
 	constructor() {
 		this.character = redCharacter;
+		this.characterNumber = 1;
 		this.fxVolume = 1;
 		this.bgVolume = 1;
 	}
