@@ -62,17 +62,24 @@ $(document).ready(function(){
 	$("#scoreboard-btn").click(function() {
 		$(".main-btn").css("display", "none");
 		$("#scoreboard").css("display", "flex");
-		for(var i =0; i<=game.playtime;i++){
+
+		for(var i =0; i<=game.scoreboard.length;i++){
 			if(i==0){
-				var plusscoreboard = "<table border><tr><td>등수</td><td>점수</td></tr>";
-				$("#scoreboard").append(plusscoreboard);
+				var plusscoreboard = "<table border><tr><td>등수</td><td>{이름 : 점수}</td></tr>";
+				$("#scoreboard-nonexit").append(plusscoreboard);
 			}
 			else{
 				var plusscoreboard = "<tr><td>" + i + "</td><td>" + game.scoreboard[i-1] + "</td></tr>";
-				$("#scoreboard").append(plusscoreboard);
+				$("#scoreboard-nonexit").append(plusscoreboard);
 			}
 		}
-		$("#scoreboard").append("</table>");
+		$("#scoreboard-nonexit").append("</table>");
+	});
+
+	$("#scoreboard-exit-btn").click(function(){
+		$(".main-btn").show();
+		$("#scoreboard").css("display", "none");
+		$("#scoreboard-nonexit").empty();
 	});
 
 	$("#redbird").click(function(){
@@ -125,7 +132,7 @@ class Game{
 		this.currentBackgroundImage=null;
 		this.drawBackgroundImage(this.canvas,"시작화면2.jpg");
 		this.multiply = 1.0;
-		this.playtime = 0;
+		this.name = '';
 
 		this.heartImage = new Image();
 		this.heartImage.src = "src/heart.png";
@@ -200,8 +207,7 @@ class Game{
 				clearInterval(this.gameLoop);
 				game.runningBgm.pause();
 				game.playSound("레벨실패.ogg",false);
-				game.scoreboard[game.playtime] = game.score;
-				game.playtime += 1;
+				game.scoreboard = game.scoreboard.push("{" + game.name + " : " + game.score + "}");
 			}
 			else{
 				this.activeItems.forEach(item=>{item.deactivate();});
