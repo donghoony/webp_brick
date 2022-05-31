@@ -121,6 +121,12 @@ $(document).ready(function(){
 		game.setBackgroundImage("시작화면3.png");
 		game.drawBackgroundImage();
 	});
+	$("#submit-btn").click(function(){
+		//alert($("#submit-input").val());
+		game.scoreboard.push({ name : $("#submit-input").val() , score: game.score});
+		$("#clear-stage").css("display","none");
+		$("#failure").css("display", "flex");
+	});
 });
 
 const NOT_RUNNING = 0;
@@ -219,7 +225,8 @@ class Game{
 		this.abilityCooldown--;
 		if (this.bricks.length === 0){
 			clearInterval(this.gameLoop);
-			if (this.currentLevel === 3){
+			if (this.currentLevel === 2){
+				$("#clear-stage").css("display","flex");
 				// CLEAR
 			}
 			else
@@ -235,6 +242,7 @@ class Game{
 				this.status = NOT_RUNNING;
 				game.playSound("레벨실패.ogg",false);
 				$("#failure").css("display", "flex");
+
 			}
 			else{
 				this.activeItems.forEach(item=>{item.deactivate();});
