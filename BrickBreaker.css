@@ -219,21 +219,24 @@ body{
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	height: 600px;
+	top: 100px;
 }
 #submit-board{
-	position: relative;
+	position: absolute;
+	top: 400px;
 	height: 300px;
-	width: 400px;
+	width: 300px;
 	background-image: url("src/backgroundimg/scoresubmit.png");
 	background-repeat: no-repeat;
 	background-size: contain;
 }
 #submit-input{
 	position: absolute;
-	top: 30px;
-	left: 50px;
+	top: 63px;
+	left: 40px;
 	height: 40px;
-	width: 300px;
+	width: 200px;
 	background: rgba(255, 255, 255, 0);
 	border: none;
 	font-size: 40px;
@@ -241,11 +244,8 @@ body{
 
 #submit-btn{
 	position:absolute;
-	top: 200px;
-	right: 50px;
-}
-
-#scoreboard-exit-btn{
+	top: 510px;
+	right: 130px;
 }
 
 #scoreboard-nonexit{

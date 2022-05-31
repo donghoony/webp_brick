@@ -51,8 +51,8 @@ $(document).ready(function(){
 	$("#sfx-volume").on("input", function(){
 		game.settings.fxVolume = $(this).val() * 0.007;
 	})
-	$("#submit-setting").on("click", function(){
-		$("#settings").hide();
+	$(".back").click(function(){
+		$(".popup").hide();
 		$(".main-btn").show();
 	})
 	$(document).mousemove(function(event){
@@ -134,7 +134,9 @@ $(document).ready(function(){
 	});
 	$("#restart").click(function(){
 		$("#failure").hide();
+		game.score = 0;
 		game.life = 3;
+		$("#score").text(0);
 		game.run();
 	});
 	$("#goto-menu").click(function(){
