@@ -95,9 +95,14 @@ $(document).ready(function(){
 	$("#scoreboard-btn").click(function() {
 		$(".main-btn").css("display", "none");
 		$("#scoreboard").css("display", "flex");
+		for(var i = 0; i < 8; i++){
+			for(var j = 0; j < 3; j++)
+				$("#scoreboard-table > tbody > tr:nth-child(" + (i+2) + ") > td").eq(j).text(j === 0 ? i+1 : "");
+		}
 		for(var i = 0; i < game.scoreboard.length; i++){
-			$("#scoreboard-table > tbody").append(
-				"<tr class='data'><td>" + (i+1) + "</td><td>" + game.scoreboard[i].name + "</td><td>" + game.scoreboard[i].score + "</td></tr>");
+			var row = $("#scoreboard-table > tbody > tr:nth-child(" + (i+2) + ") > td");
+			row.eq(1).text(game.scoreboard[i].name);
+			row.eq(2).text(game.scoreboard[i].score);
 		}
 	});
 	$("#scoreboard-exit-btn").click(function(){
@@ -146,14 +151,13 @@ $(document).ready(function(){
 		game.drawBackgroundImage();
 	});
 	$("#submit-btn").click(function(){
-		//alert($("#submit-input").val());
 		game.scoreboard.push({ name : $("#submit-input").val() , score: game.score});
-
 		$("#clear-stage").css("display","none");
 		$(".main-btn").show();
 		game.setBackgroundImage("시작화면3.png");
 		game.drawBackgroundImage();
 		$("#submit-input").val('');
+		game.playSound("시작화면.ogg", true);
 		game.scoreboard.sort(function(a, b){
 			return b.score - a.score;
 		});
@@ -197,6 +201,8 @@ class Game{
 		this.initAbilityDuration = 300;
 		this.abilityDuration = 300;
 		this.hasAbility = false;
+
+		this.stars = 1;
 	}
 
 	setBackgroundImage(source){
@@ -255,6 +261,37 @@ class Game{
 		}
 	}
 
+	finale(){
+		var ease = function (x, t, b, c, d, s) {
+			if (s == undefined) s = 1.70158;
+			return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
+		};
+		var s1 = new Audio("src/audio/star_1.ogg");
+		var s2 = new Audio("src/audio/star_2.ogg");
+		var s3 = new Audio("src/audio/star_3.ogg");
+		$(".star-img").css("height", "0");
+		s1.addEventListener("play", ()=>{
+			if (this.stars >= 2){
+				setTimeout(()=>{
+					s2.play();
+					$("#star2").animate({height: "100px"}, 200, ease);
+					}, 700);
+			}
+		})
+		s2.addEventListener("play", ()=>{
+			if (this.stars >= 2){
+				setTimeout(()=>{
+					s3.play();
+					$("#star3").animate({height: "100px"}, 100, ease);
+					}, 700);
+			}
+		})
+		setTimeout(()=>{
+			s1.play();
+			$("#star1").animate({height: "100px"}, 100,ease);
+		}, 1000);
+	}
+
 	drawObjects(){
 		if(this.hasAbility){
 			this.abilityDuration--;
@@ -272,10 +309,12 @@ class Game{
 		if (this.bricks.length === 0){
 			clearInterval(this.gameLoop);
 			if (this.currentLevel === 2){
-
+				this.runningBgm.pause();
 				$("#clear-stage").css("display","flex");
+				this.playSound("레벨성공.ogg", false);
+				this.playSound("birds_outro.ogg", false);
+				this.finale();
 
-				// CLEAR
 			}
 			else
 				this.nextLevel();
@@ -354,6 +393,7 @@ class Game{
 
 	nextLevel(){
 		this.status = NOT_RUNNING;
+		this.stars++;
 		this.startLevel(++this.currentLevel);
 		game.playSound("레벨성공.ogg",false);
 	}

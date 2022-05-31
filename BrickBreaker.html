@@ -15,7 +15,6 @@
 					<canvas id="item-duration" width="250" height="40"></canvas>
 				</div>
 				<div id="text_info">
-					<p id="user"></p>
 					<p id="score">0</p>
 				</div>
 			</div>
@@ -46,10 +45,10 @@
 						<div class="setting-name">FX Volume</div>
 						<input type="range" min="0" max="100" value="50" class="slider" id="sfx-volume">
 					</div>
-					<div id="submit-setting" class="back">OK</div>
+					<div id="submit-setting" class="back wooden-btn">OK</div>
 				</div>
 
-				<div id="scoreboard">
+				<div id="scoreboard" class="popup">
 					<div id="scoreboard-nonexit">
 						<table id="scoreboard-table">
 							<tbody>
@@ -58,6 +57,14 @@
 									<td width="200">NAME</td>
 									<td width="100">SCORE</td>
 								</tr>
+							<tr><td></td><td></td><td></td></tr>
+							<tr><td></td><td></td><td></td></tr>
+							<tr><td></td><td></td><td></td></tr>
+							<tr><td></td><td></td><td></td></tr>
+							<tr><td></td><td></td><td></td></tr>
+							<tr><td></td><td></td><td></td></tr>
+							<tr><td></td><td></td><td></td></tr>
+							<tr><td></td><td></td><td></td></tr>
 							</tbody>
 						</table>
 					</div>
@@ -81,9 +88,17 @@
 				</div>
 
 				<div id="clear-stage" class="popup">
-					<div id="clear-image">
-						<img src="src/">
+					<div id="star">
+						<img src="src/star1.png" id="star1" class="star-img">
+						<img src="src/star2.png" id="star2" class="star-img">
+						<img src="src/star3.png" id="star3" class="star-img">
 					</div>
+					YOU WIN!
+					<div id="clear-image">
+						<img src="src/clearimg.png">
+						<img src="src/BG.png" id="backlight">
+					</div>
+
 					<div id="submit-board">
 						<input type="text" id="submit-input">
 					</div>
