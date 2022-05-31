@@ -1,15 +1,27 @@
-
 var game, mouseX;
 const PI = Math.PI;
 
 $(document).ready(function(){
 	var context = document.getElementById("brick-board").getContext("2d");
-	// var info_context = document.getElementById("info").getContext("2d");
-	// var lifeContext = document.getElementById("life").getContext("2d");	// life를 나타내는 캔버스
-	// var timelimitContext = document.getElementById("timelimit").getContext("2d");	// timelimit을 나타내는 캔버스
-
 	game = new Game(context, 3);
 
+	$(document).click(function(){
+		console.log(game.status);
+		switch(game.status){
+			case NOT_RUNNING:
+				break;
+			case READY:
+				game.status = RUNNING;
+				game.balls[0].shoot();
+				break;
+			case RUNNING:
+				break;
+			case PRE_READY:
+				game.status = READY;
+				break;
+
+		}
+	});
 	$("#option-btn").click(function(){
 		$(".main-btn").css("display", "none");
 		$("#settings").css("display", "flex");
@@ -52,11 +64,28 @@ $(document).ready(function(){
 
 	$("#start-btn").click(function() {
 		$(".main-btn").css("display", "none");
+		$("#select-stage").css("display", "flex");
+	});
+	$("#stage1").click(function(){
+		$("#select-stage").hide();
 		game.runningBgm.pause();
 		game.playSound("레벨1.ogg",true);
 		// 게임을 시작합니다.
-		game.run();
-		// 다시 메인화면으로 돌아갈 떄 세 개의 버튼의 display 속성을 block으로 바꿔야 합니다.
+		game.startLevel(0);
+	});
+	$("#stage2").click(function(){
+		$("#select-stage").hide();
+		game.runningBgm.pause();
+		game.playSound("레벨1.ogg",true);
+		// 게임을 시작합니다.
+		game.startLevel(1);
+	});
+	$("#stage3").click(function(){
+		$("#select-stage").hide();
+		game.runningBgm.pause();
+		game.playSound("레벨1.ogg",true);
+		// 게임을 시작합니다.
+		game.startLevel(2);
 	});
 
 	$("#scoreboard-btn").click(function() {
@@ -87,11 +116,25 @@ $(document).ready(function(){
 		game.playSound("select3.ogg");
 		$(this).css("filter", "grayscale(0)");
 	});
+
+	$("#restart").click(function(){
+		$("#failure").hide();
+		game.life = 3;
+		game.run();
+	});
+
+	$("#goto-menu").click(function(){
+		$("#failure").hide();
+		$(".main-btn").show();
+		game.setBackgroundImage("시작화면3.png");
+		game.drawBackgroundImage();
+	});
 });
 
 const NOT_RUNNING = 0;
 const RUNNING = 1;
 const READY = 2;
+const PRE_READY = 3;
 
 class Game{
 	constructor(canvas, life){
@@ -144,7 +187,7 @@ class Game{
 	build(levelArray){
 		let brickArray = levelArray[0];
 		let itemArray = levelArray[1];
-
+		this.bricks = [];
 		for(let i = 0; i < brickArray.length; i++){
 			for(let j = 0; j < brickArray[i].length; j++){
 				let item = null;
@@ -176,18 +219,24 @@ class Game{
 	}
 
 	drawObjects(){
-		// Brick 확인 (다 깼으면 클리어)
 		if (this.bricks.length === 0){
 			clearInterval(this.gameLoop);
-			this.nextLevel();
+			if (this.currentLevel === 3){
+				// CLEAR
+			}
+			else
+				this.nextLevel();
 		}
 
 		// Ball 확인 (다 없으면 라이프 -)
 		if (this.balls.length === 0){
 			if (--this.life === 0){
+				// FAIL
 				clearInterval(this.gameLoop);
 				game.runningBgm.pause();
+				this.status = NOT_RUNNING;
 				game.playSound("레벨실패.ogg",false);
+				$("#failure").css("display", "flex");
 			}
 			else{
 				this.activeItems.forEach(item=>{item.deactivate();});
@@ -232,13 +281,14 @@ class Game{
 	}
 
 	startLevel(level){
+		this.status = PRE_READY;
 		// 게임을 시작하기 위한 메서드 묶음입니다
-
 		// 현재 진행중인 Interval 제거
 		clearInterval(this.gameLoop);
 		// 레벨 설정
 		this.currentLevel = level;
 		// 공 전부 지우기
+		this.life = 3;
 		this.balls = [];
 		// 현재 발동중인 아이템 상태 지우기
 		this.activeItems.forEach(item=>{item.deactivate();});
@@ -248,25 +298,12 @@ class Game{
 		// 레벨 작성
 		this.build(levels[level]);
 		// 처음에는 공이 패들과 붙어 있고, 사용자가 클릭 시 위로 나아감
-		game.setBackgroundImage("배경화면1.png");
+		this.setBackgroundImage("배경화면1.png");
 
 		var initBall = new this.settings.character(0, 0, Math.random() * PI / 2 + 1.25 * PI, 5, 12, false);
 		this.balls.push(initBall);
-		$(document).click(function(){
-			switch(game.status){
-				case NOT_RUNNING:
-					game.status = READY;
-					break;
-				case READY:
-					game.status = RUNNING;
-					game.balls[0].shoot();
-					break;
-				case RUNNING:
-					break;
-			}
-		});
-
 		this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
+
 	}
 
 	nextLevel(){
@@ -277,6 +314,7 @@ class Game{
 
 	run(){
 		this.startLevel(0);
+		this.status = PRE_READY;
 	}
 
 	addScore(score){

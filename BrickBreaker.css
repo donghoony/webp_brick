@@ -56,17 +56,19 @@
 
 .main-btn{
 	display: none;
+	margin: 5px;
+}
+
+.wooden-btn{
+	font-size: 18px;
 	width: 150px;
 	height: 70px;
-	margin: 5px;
 	background-image: url("src/wood.png");
 	background-size: contain;
 	background-position: center;
 	background-repeat: no-repeat;
 	line-height: 70px;
-	font-size: 18px;
 }
-
 
 #submit-setting{
 	width: 100px;
@@ -174,4 +176,35 @@
 	width: 500px;
 	height: 400px;
 	background-color: yellow;
+}
+
+#failure{
+	display: none;
+	font-size: 50px;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	row-gap: 15px;
+}
+
+.popup{
+	display: none;
+	position: absolute;
+	top: 200px; left: 50px;
+	width: 400px;
+	height: 400px;
+	background-color: rgba(255, 255, 255, 0.5);
+}
+
+#failure-menu{
+	display:flex;
+}
+
+#select-stage{
+	height: 600px;
+	top: 100px;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	row-gap: 30px;
 }

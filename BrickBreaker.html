@@ -23,11 +23,11 @@
 				<div id="before-start">PLAY</div>
 				<canvas id="brick-board" width="500" height="800"></canvas>
 				<div id="button-container">
-					<div id="start-btn" class="main-btn">START</div>
-					<div id="option-btn" class="main-btn">SETTINGS</div>
-					<div id="scoreboard-btn" class="main-btn">SCOREBOARD</div>
+					<div id="start-btn" class="main-btn wooden-btn">START</div>
+					<div id="option-btn" class="main-btn wooden-btn">SETTINGS</div>
+					<div id="scoreboard-btn" class="main-btn wooden-btn">SCOREBOARD</div>
 				</div>
-				<div id="settings">
+				<div id="settings" class="popup">
 					<div class="setting-name">SETTINGS</div>
 					<div class="setting-item">
 						<div class="setting-name">Character</div>
@@ -51,6 +51,21 @@
 
 				<div id="scoreboard">
 
+				</div>
+
+				<div id="failure">
+					GAME OVER<br>
+					<img src="src/backgroundimg/게임오버.png">
+					<div id="failure-menu" class="popup">
+						<div class="wooden-btn" id="goto-menu">MENU</div>
+						<div class="wooden-btn" id="restart">RESTART</div>
+					</div>
+				</div>
+
+				<div id="select-stage" class="popup">
+					<div class="wooden-btn" id="stage1">Stage 1</div>
+					<div class="wooden-btn" id="stage2">Stage 2</div>
+					<div class="wooden-btn" id="stage3">Stage 3</div>
 				</div>
 			</div>
 		</div>
