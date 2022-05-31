@@ -89,9 +89,8 @@ $(document).ready(function(){
 		$(".main-btn").css("display", "none");
 		$("#scoreboard").css("display", "flex");
 		for(var i = 0; i < game.scoreboard.length; i++){
-			console.log("<tr><td>" + i + "</td><td>" + game.scoreboard[i].name + "</td><td>" + game.scoreboard[i].score + "</td></tr>");
 			$("#scoreboard-table > tbody").append(
-				"<tr class='data'><td>" + i + "</td><td>" + game.scoreboard[i].name + "</td><td>" + game.scoreboard[i].score + "</td></tr>");
+				"<tr class='data'><td>" + (i+1) + "</td><td>" + game.scoreboard[i].name + "</td><td>" + game.scoreboard[i].score + "</td></tr>");
 		}
 	});
 	$("#scoreboard-exit-btn").click(function(){
@@ -140,6 +139,9 @@ $(document).ready(function(){
 		game.setBackgroundImage("시작화면3.png");
 		game.drawBackgroundImage();
 		$("#submit-input").val('');
+		game.scoreboard.sort(function(a, b){
+			return b.score - a.score;
+		});
 	});
 });
 
