@@ -34,6 +34,11 @@ $(document).ready(function(){
 		game.playSound("menuhover.ogg", false);
 	}, ()=>{});
 
+	$("#guide").click(function(){
+		$(".main-btn").css("display", "none");
+		$("#tutorial").css("display", "flex");
+	});
+
 	$("#option-btn").click(function(){
 		$(".main-btn").css("display", "none");
 		$("#settings").css("display", "flex");

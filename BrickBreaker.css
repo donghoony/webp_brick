@@ -3,7 +3,7 @@
 	src: url("src/AngryBirdsText-Regular.ttf")
 }
 * {margin: 0; padding: 0;
-	font-family: AngryBird, serif;
+	font-family: AngryBird, "Pretendard ExtraLight", serif;
 	font-weight: bold;
 }
 body{
@@ -12,6 +12,9 @@ body{
 	background-size: cover;
 	user-select: none;
 	cursor: none;
+}
+img{
+	-webkit-user-drag: none;
 }
 
 #brick-board{
@@ -114,7 +117,8 @@ body{
 }
 #button-container{
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
+
 	justify-content: center;
 	align-items: center;
 
@@ -166,9 +170,9 @@ body{
 	position: absolute;
 	line-height: 800px;
 	font-size: 50px;
-	top: 0; left:0;
+	top: 0; left: 0;
 	width: 500px; height: 800px;
-	background-color: white;
+	background-color: transparent;
 }
 
 .select-radio{
@@ -197,7 +201,7 @@ body{
 	top: 200px; left: 50px;
 	width: 400px;
 	height: 400px;
-	background-color: rgba(0, 0, 0, 0.5);
+	background-color: rgba(0, 0, 0, 0.7);
 }
 
 #failure-menu{
@@ -310,3 +314,28 @@ td{
 	height: 40px;
 	background: transparent url("src/cursor.gif") 0 0 no-repeat;
 }
+
+#tutorial{
+	flex-direction: column;
+	color: white;
+	height: 600px;
+	top: 100px;
+	justify-content: center;
+	align-items: center;
+}
+
+.tutorial-item{
+	vertical-align: middle;
+	width: 40px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.tutorial-row{
+	width: 400px;
+	height: 55px;
+	line-height: 50px;
+	text-align: left;
+	align-items: center;
+}
+
