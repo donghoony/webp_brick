@@ -75,17 +75,6 @@ body{
 	line-height: 70px;
 }
 
-#scoreboard-exit-btn{
-	width : 60px;
-	height : 30px;
-	margin : 10px;
-	background-image: url("src/wood.png");
-	background-size: contain;
-	background-position: bottom;
-	font-size : 20px;
-	text-align : center;
-}
-
 
 #submit-setting{
 	width: 100px;
@@ -249,6 +238,7 @@ body{
 	border: none;
 	font-size: 40px;
 }
+
 #submit-btn{
 	position:absolute;
 	top: 200px;
@@ -256,12 +246,14 @@ body{
 }
 
 #scoreboard-exit-btn{
-	width : 60px;
-	height : 30px;
-	margin : 10px;
-	background-image: url("src/wood.png");
-	background-size: contain;
-	background-position: bottom;
-	font-size : 20px;
-	text-align : center;
+}
+
+#scoreboard-nonexit{
+	display: block;
+	height: 300px;
+}
+
+table, th, td{
+	border: 2px solid olive;
+	border-collapse: collapse;
 }
