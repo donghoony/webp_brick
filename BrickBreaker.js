@@ -219,7 +219,7 @@ class Game{
 		this.abilityCooldown--;
 		if (this.bricks.length === 0){
 			clearInterval(this.gameLoop);
-			if (this.currentLevel === 3){
+			if (this.currentLevel === 2){
 				// CLEAR
 			}
 			else
