@@ -15,6 +15,7 @@ $(document).ready(function(){
 				game.balls[0].shoot();
 				break;
 			case RUNNING:
+				// Ability
 				break;
 			case PRE_READY:
 				game.status = READY;
@@ -160,6 +161,11 @@ class Game{
 
 		this.heartImage = new Image();
 		this.heartImage.src = "src/heart.png";
+
+		this.activateAbility = this.settings.character.activate;
+		this.deactivateAbility = this.settings.character.deactivate;
+		this.initAbilityCooldown = 1000;
+		this.abilityCooldown = 1000;
 	}
 
 	setBackgroundImage(source){
@@ -219,6 +225,7 @@ class Game{
 	}
 
 	drawObjects(){
+		this.abilityCooldown--;
 		if (this.bricks.length === 0){
 			clearInterval(this.gameLoop);
 			if (this.currentLevel === 3){
@@ -510,12 +517,12 @@ class yellowCharacter extends Ball {
 		super(x, y, angle, speed, radius, running, "yellow.png");
 		//this.duration = duration;
 	}
-	activate() {
+	static activate() {
 		$("#brick-board").click(function() {
 			this.speed += 10;
 		});
 	}
-	deactivate() {
+	static deactivate() {
 		this.speed -= 10;
 	}
 }	// yellow는 특정 조건을 만족하면 속도가 빨라진다.
