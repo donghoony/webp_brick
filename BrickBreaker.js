@@ -4,6 +4,8 @@ const PI = Math.PI;
 $(document).ready(function(){
 	let context = document.getElementById("brick-board").getContext("2d");
 	game = new Game(context, 3);
+	game.setBackgroundImage("시작화면3.png");
+	game.drawBackgroundImage();
 
 	$(document).click(function(){
 		switch(game.status){
@@ -76,9 +78,7 @@ $(document).ready(function(){
 		mouseX = event.pageX - $(window).width()/2 + 250;
 	});
 	$("#before-start").click(function(){
-		$(this).hide();
-		game.setBackgroundImage("시작화면3.png");
-		game.drawBackgroundImage();
+		$(this).slideUp();
 		$(".main-btn").show();
 		game.playSound("시작화면.ogg",true);
 	});
@@ -138,6 +138,7 @@ $(document).ready(function(){
 	$("#redbird").click(function(){
 		game.settings.character = redCharacter;
 		game.settings.characterNumber = 1;
+		game.paddle.isPossible = false;
 		game.activateAbility = null;
 		game.deactivateAbility = null;
 		$(".bird").css("filter", "grayscale(100)");
@@ -181,8 +182,8 @@ $(document).ready(function(){
 		game.setBackgroundImage("시작화면3.png");
 		game.drawBackgroundImage();
 		$("#submit-input").val('');
+		init();
 		game.playSound("시작화면.ogg", true);
-		$("#score").text(0);
 		game.lifeCanvas.clearRect(0, 0, 250, 40);
 		game.scoreboard.sort(function(a, b){
 			return b.score - a.score;
@@ -320,20 +321,23 @@ class Game{
 	}
 
 	drawObjects(){
-		if(this.hasAbility){
-			this.abilityDuration--;
-			if (this.abilityDuration <= 0){
-				if (this.deactivateAbility != null){
-					this.deactivateAbility();
-					console.log("DEACTIVATE");
+		if(this.status === RUNNING){
+			if(this.hasAbility){
+				this.abilityDuration--;
+				if (this.abilityDuration <= 0){
+					if (this.deactivateAbility != null){
+						this.deactivateAbility();
+					}
+					this.hasAbility = false;
 				}
-				this.hasAbility = false;
 			}
-		}
-		if(this.abilityCooldown > 0) {
-			this.abilityCooldown--;
-			if(this.abilityCooldown <= 0 && this.abilityDuration <= 0) {
+			if (this.abilityCooldown <= 0 && this.activateAbility != null)
 				this.paddle.isPossible = true;
+			if(this.abilityCooldown > 0) {
+				this.abilityCooldown--;
+				if(this.abilityCooldown <= 0 && this.abilityDuration <= 0) {
+					this.paddle.isPossible = true;
+				}
 			}
 		}
 
@@ -449,6 +453,7 @@ class Game{
 		audio.src = "src/audio/" + source;
 		audio.loop = loop;
 		if(loop){
+			if(this.runningBgm != null) this.runningBgm.pause();
 			audio.volume = this.settings.bgVolume;
 			this.runningBgm = audio;
 		}
@@ -609,7 +614,8 @@ class blueCharacter extends Ball {
 		super(x, y, angle, speed, radius, running, "blue.png");
 	}
 	static activate() {
-		let ballLength = game.balls.length + 1;
+		game.playSound("select2.ogg", false);
+		let ballLength = game.balls.length;
 		for(let i = 0; i < ballLength; i++) {
 			let ball = game.balls[i];
 			let angle1 = ball.angle - (PI / 6);
@@ -630,6 +636,7 @@ class yellowCharacter extends Ball {
 		//this.duration = duration;
 	}
 	static activate() {
+		game.playSound("select3.ogg", false);
 		game.paddle.speed += 30;
 	}
 	static deactivate() {
@@ -646,12 +653,12 @@ class Paddle{
 		this.size = size;
 		this.image = new Image();
 		this.image.src = "src/paddle.png";
-		this.isPossible = true;
+		this.isPossible = false;
 	}
 
 	draw(canvas){
 		if(this.isPossible) {
-			canvas.filter = "hue-rotate(90deg)";
+			canvas.filter = "hue-rotate(270deg)";
 		}
 		canvas.drawImage(this.image, this.x, this.y, this.size, this.height);
 		canvas.filter = "none"

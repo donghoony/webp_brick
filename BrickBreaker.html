@@ -17,11 +17,12 @@
 					<canvas id="item-duration" width="250" height="40"></canvas>
 				</div>
 				<div id="text_info">
-					<p id="score">0</p>
+					<img id="score-egg" src="src/score_egg.png">
+					<div id="score">0</div>
 				</div>
 			</div>
 			<div id="canvas-wrapper">
-				<div id="before-start">PLAY</div>
+				<div id="before-start"><div class="wooden-btn">PLAY</div></div>
 				<canvas id="brick-board" width="500" height="800"></canvas>
 				<div id="button-container">
 					<div id="start-btn" class="main-btn wooden-btn">START</div>
@@ -30,7 +31,7 @@
 					<div id="guide" class="main-btn wooden-btn">GUIDE</div>
 				</div>
 				<div id="settings" class="popup">
-					<div class="setting-name">SETTINGS</div>
+					<div>SETTINGS</div>
 					<div class="setting-item">
 						<div class="setting-name">Character</div>
 						<div class="character">
@@ -110,8 +111,6 @@
 
 				<div id="tutorial" class="popup">
 					<div class="tutorial-row">
-					</div>
-					<div class="tutorial-row">
 						<img src="src/backgroundimg/스코어보드.png" class="tutorial-item">
 						모든 블럭을 깨면 다음 스테이지로 넘어갑니다.
 					</div>
@@ -144,6 +143,8 @@
 						목숨은 총 3 개입니다
 					</div>
 					<div class="tutorial-row">
+						<img src="src/score_egg.png" class="tutorial-item">
+						블럭은 100 점, 아이템은 50 점!
 					</div>
 					<div class="wooden-btn back">BACK</div>
 				</div>
