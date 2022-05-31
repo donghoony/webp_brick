@@ -124,8 +124,12 @@ $(document).ready(function(){
 	$("#submit-btn").click(function(){
 		//alert($("#submit-input").val());
 		game.scoreboard.push({ name : $("#submit-input").val() , score: game.score});
+
 		$("#clear-stage").css("display","none");
-		$("#failure").css("display", "flex");
+		$(".main-btn").show();
+		game.setBackgroundImage("시작화면3.png");
+		game.drawBackgroundImage();
+		$("#submit-input").val('');
 	});
 });
 
@@ -226,10 +230,9 @@ class Game{
 		if (this.bricks.length === 0){
 			clearInterval(this.gameLoop);
 			if (this.currentLevel === 2){
-<<<<<<< HEAD
+
 				$("#clear-stage").css("display","flex");
-=======
->>>>>>> 7e4c12ecc1cd37016af804d9fdadb80c5b824cb9
+
 				// CLEAR
 			}
 			else
