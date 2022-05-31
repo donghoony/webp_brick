@@ -4,6 +4,8 @@ const PI = Math.PI;
 $(document).ready(function(){
 	let context = document.getElementById("brick-board").getContext("2d");
 	game = new Game(context, 3);
+	game.setBackgroundImage("시작화면3.png");
+	game.drawBackgroundImage();
 
 	$(document).click(function(){
 		switch(game.status){
@@ -18,8 +20,10 @@ $(document).ready(function(){
 				if(game.abilityCooldown <= 0){
 					game.abilityCooldown = game.initAbilityCooldown;
 					game.abilityDuration = game.initAbilityDuration;
-					if(game.activateAbility != null)
+					if(game.activateAbility != null) {
 						game.activateAbility();
+						game.paddle.isPossible = false;
+					}
 					game.hasAbility = true;
 				}
 				break;
@@ -33,6 +37,11 @@ $(document).ready(function(){
 	}).hover(function(){
 		game.playSound("menuhover.ogg", false);
 	}, ()=>{});
+
+	$("#guide").click(function(){
+		$(".main-btn").css("display", "none");
+		$("#tutorial").css("display", "flex");
+	});
 
 	$("#option-btn").click(function(){
 		$(".main-btn").css("display", "none");
@@ -69,9 +78,7 @@ $(document).ready(function(){
 		mouseX = event.pageX - $(window).width()/2 + 250;
 	});
 	$("#before-start").click(function(){
-		$(this).hide();
-		game.setBackgroundImage("시작화면3.png");
-		game.drawBackgroundImage();
+		$(this).slideUp();
 		$(".main-btn").show();
 		game.playSound("시작화면.ogg",true);
 	});
@@ -79,23 +86,31 @@ $(document).ready(function(){
 		$(".main-btn").css("display", "none");
 		$("#select-stage").css("display", "flex");
 	});
+
+
+	var init = ()=>{
+		game.life = 3;
+		game.score = 0;
+		game.stars = 1;
+		$("#score").text(0);
+		game.itemCanvas.clearRect(0, 0, 250, 40);
+	};
 	$("#stage1").click(function(){
 		$("#select-stage").hide();
 		game.runningBgm.pause();
-		game.playSound("레벨1.ogg",true);
+		init();
 		game.startLevel(0);
 	});
 	$("#stage2").click(function(){
 		$("#select-stage").hide();
 		game.runningBgm.pause();
-		game.playSound("레벨1.ogg",true);
+		init();
 		game.startLevel(1);
 	});
 	$("#stage3").click(function(){
 		$("#select-stage").hide();
 		game.runningBgm.pause();
-		game.playSound("레벨1.ogg",true);
-		// 게임을 시작합니다.
+		init();
 		game.startLevel(2);
 	});
 	$("#back").click(function(){
@@ -123,6 +138,7 @@ $(document).ready(function(){
 	$("#redbird").click(function(){
 		game.settings.character = redCharacter;
 		game.settings.characterNumber = 1;
+		game.paddle.isPossible = false;
 		game.activateAbility = null;
 		game.deactivateAbility = null;
 		$(".bird").css("filter", "grayscale(100)");
@@ -149,14 +165,13 @@ $(document).ready(function(){
 	});
 	$("#restart").click(function(){
 		$("#failure").hide();
-		game.score = 0;
-		game.life = 3;
-		$("#score").text(0);
-		game.run();
+		init();
+		game.startLevel(game.currentLevel);
 	});
 	$("#goto-menu").click(function(){
 		$("#failure").hide();
 		$(".main-btn").show();
+		init();
 		game.setBackgroundImage("시작화면3.png");
 		game.drawBackgroundImage();
 	});
@@ -167,8 +182,8 @@ $(document).ready(function(){
 		game.setBackgroundImage("시작화면3.png");
 		game.drawBackgroundImage();
 		$("#submit-input").val('');
+		init();
 		game.playSound("시작화면.ogg", true);
-		$("#score").text(0);
 		game.lifeCanvas.clearRect(0, 0, 250, 40);
 		game.scoreboard.sort(function(a, b){
 			return b.score - a.score;
@@ -306,18 +321,25 @@ class Game{
 	}
 
 	drawObjects(){
-		if(this.hasAbility){
-			this.abilityDuration--;
-			if (this.abilityDuration <= 0){
-				if (this.deactivateAbility != null){
-					this.deactivateAbility();
-					console.log("DEACTIVATE");
+		if(this.status === RUNNING){
+			if(this.hasAbility){
+				this.abilityDuration--;
+				if (this.abilityDuration <= 0){
+					if (this.deactivateAbility != null){
+						this.deactivateAbility();
+					}
+					this.hasAbility = false;
 				}
-				this.hasAbility = false;
+			}
+			if (this.abilityCooldown <= 0 && this.activateAbility != null)
+				this.paddle.isPossible = true;
+			if(this.abilityCooldown > 0) {
+				this.abilityCooldown--;
+				if(this.abilityCooldown <= 0 && this.abilityDuration <= 0) {
+					this.paddle.isPossible = true;
+				}
 			}
 		}
-		if(this.abilityCooldown > 0)
-			this.abilityCooldown--;
 
 		if (this.bricks.length === 0){
 			clearInterval(this.gameLoop);
@@ -388,17 +410,18 @@ class Game{
 
 	startLevel(level){
 		// 게임을 시작하기 위한 메서드 묶음
+		this.runningBgm.pause();
+		this.playSound("ingame" + (level + 1) + ".ogg", true);
 		this.status = PRE_READY;
 		// 현재 진행중인 Interval 제거
 		clearInterval(this.gameLoop);
 		this.currentLevel = level;
-		this.life = 3;
 		this.balls = [];
 		this.activeItems.forEach(item=>{item.deactivate();});
 		this.activeItems = [];
 		this.fallingItems = [];
 		this.build(levels[level]);
-		this.setBackgroundImage("배경화면1.png");
+		this.setBackgroundImage("stage" + (level + 1) + ".png");
 		let initBall = new this.settings.character(0, 0, Math.random() * PI / 2 + 1.25 * PI, 5, 12, false);
 		this.balls.push(initBall);
 		this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
@@ -407,11 +430,15 @@ class Game{
 	nextLevel(){
 		this.status = NOT_RUNNING;
 		this.stars++;
+
 		this.startLevel(++this.currentLevel);
 		game.playSound("레벨성공.ogg",false);
 	}
 
 	run(){
+		this.life = 3;
+		this.score = 0;
+		$("#score").text(0);
 		this.startLevel(0);
 		this.status = PRE_READY;
 	}
@@ -426,6 +453,7 @@ class Game{
 		audio.src = "src/audio/" + source;
 		audio.loop = loop;
 		if(loop){
+			if(this.runningBgm != null) this.runningBgm.pause();
 			audio.volume = this.settings.bgVolume;
 			this.runningBgm = audio;
 		}
@@ -586,7 +614,8 @@ class blueCharacter extends Ball {
 		super(x, y, angle, speed, radius, running, "blue.png");
 	}
 	static activate() {
-		let ballLength = game.balls.length + 1;
+		game.playSound("select2.ogg", false);
+		let ballLength = game.balls.length;
 		for(let i = 0; i < ballLength; i++) {
 			let ball = game.balls[i];
 			let angle1 = ball.angle - (PI / 6);
@@ -607,6 +636,7 @@ class yellowCharacter extends Ball {
 		//this.duration = duration;
 	}
 	static activate() {
+		game.playSound("select3.ogg", false);
 		game.paddle.speed += 30;
 	}
 	static deactivate() {
@@ -623,10 +653,15 @@ class Paddle{
 		this.size = size;
 		this.image = new Image();
 		this.image.src = "src/paddle.png";
+		this.isPossible = false;
 	}
 
 	draw(canvas){
+		if(this.isPossible) {
+			canvas.filter = "hue-rotate(270deg)";
+		}
 		canvas.drawImage(this.image, this.x, this.y, this.size, this.height);
+		canvas.filter = "none"
 	}
 
 	calculate(){
@@ -747,6 +782,7 @@ class Item{
 		if (this.paddleCollision())
 		{
 			this.activate();
+			game.addScore(50);
 			game.activeItems.push(this);
 			this.isFalling = false;
 			game.playSound("big_bird.ogg",false);
@@ -819,8 +855,8 @@ class Settings{
 	constructor() {
 		this.character = redCharacter;
 		this.characterNumber = 1;
-		this.fxVolume = 1;
-		this.bgVolume = 1;
+		this.fxVolume = 0.35;
+		this.bgVolume = 0.35;
 	}
 }
 

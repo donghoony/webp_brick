@@ -3,7 +3,7 @@
 	src: url("src/AngryBirdsText-Regular.ttf")
 }
 * {margin: 0; padding: 0;
-	font-family: AngryBird, serif;
+	font-family: AngryBird, "Pretendard ExtraLight", serif;
 	font-weight: bold;
 }
 body{
@@ -12,6 +12,9 @@ body{
 	background-size: cover;
 	user-select: none;
 	cursor: none;
+}
+img{
+	-webkit-user-drag: none;
 }
 
 #brick-board{
@@ -52,12 +55,14 @@ body{
 }
 
 #text_info {
+	position: relative;
 	display: block;
 	width: 250px;
 	height: 50px;
 	float: left;
 	text-align: center;
 	margin: 25px 0;
+	line-height: 50px;
 }	/* 글자로 표시된 정보를 나타내는 div입니다. */
 
 .main-btn{
@@ -81,18 +86,8 @@ body{
 	transform: scale(1.1);
 }
 
-#submit-setting{
-	width: 100px;
-	height: 70px;
-	background-image: url("src/wood.png");
-	background-size: contain;
-	background-position: center;
-	background-repeat: no-repeat;
-	line-height: 70px;
-	font-size: 18px;
-}
-
 #settings{
+	color: white;
 	display: none;
 	flex-direction: column;
 	justify-content: center;
@@ -113,14 +108,17 @@ body{
 	border: 5px solid saddlebrown;
 }
 #button-container{
+	padding-top: 100px;
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
+	flex-wrap: wrap;
+	column-gap: 30px;
 	justify-content: center;
 	align-items: center;
-
+	align-content: flex-start;
 	position: absolute;
 	top: 500px; left: 0;
-	height: 300px;
+	height: 200px;
 	width: 500px;
 }
 .setting-item{
@@ -150,6 +148,7 @@ body{
 }
 
 .setting-name{
+	color:black;
 	width: 100px;
 	margin-left: 10px;
 	margin-right: 10px;
@@ -166,9 +165,12 @@ body{
 	position: absolute;
 	line-height: 800px;
 	font-size: 50px;
-	top: 0; left:0;
+	top: 0; left: 0;
 	width: 500px; height: 800px;
-	background-color: white;
+	background: transparent;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .select-radio{
@@ -183,6 +185,7 @@ body{
 }
 
 #failure{
+	color: white;
 	display: none;
 	font-size: 50px;
 	flex-direction: column;
@@ -197,7 +200,7 @@ body{
 	top: 200px; left: 50px;
 	width: 400px;
 	height: 400px;
-	background-color: rgba(0, 0, 0, 0.5);
+	background-color: rgba(0, 0, 0, 0.7);
 }
 
 #failure-menu{
@@ -205,8 +208,8 @@ body{
 }
 
 #select-stage{
-	height: 600px;
-	top: 100px;
+	height: 400px;
+	top: 200px;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
@@ -255,8 +258,11 @@ td{
 }
 
 #score{
+	text-align: right;
+	padding-left: 100px;
 	font-size: 30px;
 	line-height: 50px;
+	width: 100px;
 }
 
 
@@ -309,4 +315,35 @@ td{
 	width: 40px;
 	height: 40px;
 	background: transparent url("src/cursor.gif") 0 0 no-repeat;
+}
+
+#tutorial{
+	flex-direction: column;
+	color: white;
+	height: 600px;
+	top: 100px;
+	justify-content: center;
+	align-items: center;
+}
+
+.tutorial-item{
+	vertical-align: middle;
+	width: 40px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.tutorial-row{
+	width: 400px;
+	height: 55px;
+	line-height: 50px;
+	text-align: left;
+	align-items: center;
+}
+
+#score-egg{
+	position: absolute;
+	left: 80px;
+	top: 8px;
+	height: 30px;
 }

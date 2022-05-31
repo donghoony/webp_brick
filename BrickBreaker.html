@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>WEBP 8조</title>
+		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
 		<link rel="stylesheet" type="text/css" href="BrickBreaker.css">
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script src="BrickBreaker.js"></script>
@@ -16,19 +17,21 @@
 					<canvas id="item-duration" width="250" height="40"></canvas>
 				</div>
 				<div id="text_info">
-					<p id="score">0</p>
+					<img id="score-egg" src="src/score_egg.png">
+					<div id="score">0</div>
 				</div>
 			</div>
 			<div id="canvas-wrapper">
-				<div id="before-start">PLAY</div>
+				<div id="before-start"><div class="wooden-btn">PLAY</div></div>
 				<canvas id="brick-board" width="500" height="800"></canvas>
 				<div id="button-container">
 					<div id="start-btn" class="main-btn wooden-btn">START</div>
 					<div id="option-btn" class="main-btn wooden-btn">SETTINGS</div>
 					<div id="scoreboard-btn" class="main-btn wooden-btn">SCOREBOARD</div>
+					<div id="guide" class="main-btn wooden-btn">GUIDE</div>
 				</div>
 				<div id="settings" class="popup">
-					<div class="setting-name">SETTINGS</div>
+					<div>SETTINGS</div>
 					<div class="setting-item">
 						<div class="setting-name">Character</div>
 						<div class="character">
@@ -82,9 +85,9 @@
 				</div>
 
 				<div id="select-stage" class="popup">
-					<div class="wooden-btn" id="stage1">Stage 1</div>
-					<div class="wooden-btn" id="stage2">Stage 2</div>
-					<div class="wooden-btn" id="stage3">Stage 3</div>
+					<div class="wooden-btn" id="stage1" class="stage-select">Stage 1</div>
+					<div class="wooden-btn" id="stage2" class="stage-select">Stage 2</div>
+					<div class="wooden-btn" id="stage3" class="stage-select">Stage 3</div>
 					<div class="wooden-btn back">BACK</div>
 				</div>
 
@@ -105,6 +108,47 @@
 					</div>
 					<div class="wooden-btn" id="submit-btn">SUBMIT</div>
 				</div>
+
+				<div id="tutorial" class="popup">
+					<div class="tutorial-row">
+						<img src="src/backgroundimg/스코어보드.png" class="tutorial-item">
+						모든 블럭을 깨면 다음 스테이지로 넘어갑니다.
+					</div>
+					<div class="tutorial-row">
+						<img src="src/egg1.png" class="tutorial-item">
+						공의 개수가 두 배가 됩니다
+					</div>
+					<div class="tutorial-row">
+						<img src="src/egg2.png" class="tutorial-item">
+						패들의 길이가 조금 늘어납니다
+					</div>
+					<div class="tutorial-row">
+						<img src="src/egg3.png" class="tutorial-item">
+						획득하는 점수의 배수 계수를 0.2 올립니다
+					</div>
+					<div class="tutorial-row">
+						<img src="src/egg4.png" class="tutorial-item">
+						잠시 동안 공이 무적이 됩니다
+					</div>
+					<div class="tutorial-row">
+						<img src="src/paddle.png" class="tutorial-item">
+						공이 패들에 닿는 위치에 따라 반사됩니다
+					</div>
+					<div class="tutorial-row">
+						<img src="src/star2.png" class="tutorial-item">
+						라운드 하나당 한 개의 별을 얻습니다
+					</div>
+					<div class="tutorial-row">
+						<img src="src/heart.png" class="tutorial-item">
+						목숨은 총 3 개입니다
+					</div>
+					<div class="tutorial-row">
+						<img src="src/score_egg.png" class="tutorial-item">
+						블럭은 100 점, 아이템은 50 점!
+					</div>
+					<div class="wooden-btn back">BACK</div>
+				</div>
+
 			</div>
 		</div>
 	</body>
