@@ -88,7 +88,16 @@ $(document).ready(function(){
 	$("#scoreboard-btn").click(function() {
 		$(".main-btn").css("display", "none");
 		$("#scoreboard").css("display", "flex");
+		for(var i = 0; i < game.scoreboard.length; i++){
+			$("#scoreboard-table > tbody").append(
+				"<tr class='data'><td>" + (i+1) + "</td><td>" + game.scoreboard[i].name + "</td><td>" + game.scoreboard[i].score + "</td></tr>");
+		}
 	});
+	$("#scoreboard-exit-btn").click(function(){
+		$(".main-btn").css("display", "block");
+		$("#scoreboard").css("display", "none");
+		$("#scoreboard-table > tbody > .data").remove();
+	})
 	$("#redbird").click(function(){
 		game.settings.character = redCharacter;
 		game.settings.characterNumber = 1;
@@ -120,6 +129,19 @@ $(document).ready(function(){
 		$(".main-btn").show();
 		game.setBackgroundImage("시작화면3.png");
 		game.drawBackgroundImage();
+	});
+	$("#submit-btn").click(function(){
+		//alert($("#submit-input").val());
+		game.scoreboard.push({ name : $("#submit-input").val() , score: game.score});
+
+		$("#clear-stage").css("display","none");
+		$(".main-btn").show();
+		game.setBackgroundImage("시작화면3.png");
+		game.drawBackgroundImage();
+		$("#submit-input").val('');
+		game.scoreboard.sort(function(a, b){
+			return b.score - a.score;
+		});
 	});
 });
 
@@ -220,6 +242,9 @@ class Game{
 		if (this.bricks.length === 0){
 			clearInterval(this.gameLoop);
 			if (this.currentLevel === 2){
+
+				$("#clear-stage").css("display","flex");
+
 				// CLEAR
 			}
 			else
@@ -235,6 +260,7 @@ class Game{
 				this.status = NOT_RUNNING;
 				game.playSound("레벨실패.ogg",false);
 				$("#failure").css("display", "flex");
+
 			}
 			else{
 				this.activeItems.forEach(item=>{item.deactivate();});
