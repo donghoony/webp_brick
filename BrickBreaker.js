@@ -223,6 +223,10 @@ class Game{
 							break;
 						case "S12":
 							item = new Score12(i, j, this.paddle);
+							break;
+						case "B" :
+							item = new bomb(i, j, this.paddle);
+							break;
 					}
 				}
 				this.bricks.push(new Brick(i, j, "green", item, brickArray[i][j]));
@@ -252,8 +256,8 @@ class Game{
 		}
 
 		// Ball 확인 (다 없으면 라이프 -)
-		if (this.balls.length === 0){
-			if (--this.life === 0){
+		if (this.balls.length === 0 || this.life === 0){
+			if (--this.life <= 0){
 				// FAIL
 				clearInterval(this.gameLoop);
 				game.runningBgm.pause();
@@ -759,8 +763,18 @@ class powerBall extends Item{
 		for(let i=0;i<game.balls.length;i++)
 			game.balls[i].isPower = false;
 	}
-
 }
+
+class bomb extends Item{
+	constructor(yIndex, xIndex, paddle){
+		super(yIndex, xIndex, paddle, 0);
+		this.image.src = "src/bomb.png";
+	}
+	activate(){
+		game.life -= 1;
+	}
+}
+
 
 const levels =[
 	// Level 1 역기모양
@@ -797,15 +811,15 @@ const levels =[
 		   [0, 0, 0, 0, 1, 0, 0, 0, 0]
 		],
 		[
-		   [0, 0, 0, 0, 1, 0, 0, 0, 0],
-		   [0, 0, 0, 1, "P", 1, 0, 0, 0],
+		   [0, 0, 0, 0, "B", 0, 0, 0, 0],
+		   [0, 0, 0, "B", "P", "B", 0, 0, 0],
 		   [0, 0, 1, 1, "P", 1, 1, 0, 0],
 		   [0, 1, "S12", 1, "D", 1, 1, 1, 0],
 		   [1,"P", 1,"D", "PO", "D", 1, "P", 1],
 		   [0, 1, 1, "PO", "D", "PO", 1, 1, 0],
 		   [0, 0, "S12", 1, 1, 1, "S12", 0, 0],
-		   [0, 0, 0, 1, "S12", 1, 0, 0, 0],
-		   [0, 0, 0, 0, 1, 0, 0, 0, 0]
+		   [0, 0, 0, "B", "S12", "B", 0, 0, 0],
+		   [0, 0, 0, 0, "B", 0, 0, 0, 0]
 			
 		]
 	],
