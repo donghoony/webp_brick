@@ -293,7 +293,6 @@ class Game{
 		this.setBackgroundImage("배경화면1.png");
 		let initBall = new this.settings.character(0, 0, Math.random() * PI / 2 + 1.25 * PI, 5, 12, false);
 		this.balls.push(initBall);
-
 		this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
 	}
 
@@ -548,7 +547,7 @@ class Brick {
 		this.isDestroyed = this.count === 0;
 
 		this.img = new Image();
-		this.img.src = "src/brick1.png";
+		this.img.src = "src/brick2-2.png";
 		this.blinkDuration = Math.random() * 400 + 350;
 	}
 
@@ -556,12 +555,12 @@ class Brick {
 		this.blinkDuration--;
 		if (this.blinkDuration > 0) return;
 
-		if (this.img.src.endsWith("brick1.png")){
-			this.img.src = "src/brick2.png";
+		if (this.img.src.endsWith("brick2-2.png")){
+			this.img.src = "src/brick2-1.png";
 			this.blinkDuration = 30;
 		}
 		else{
-			this.img.src = "src/brick1.png";
+			this.img.src = "src/brick2-2.png";
 			this.blinkDuration = Math.random() * 400 + 350;
 		}
 	}
