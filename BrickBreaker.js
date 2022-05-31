@@ -88,18 +88,11 @@ $(document).ready(function(){
 	$("#scoreboard-btn").click(function() {
 		$(".main-btn").css("display", "none");
 		$("#scoreboard").css("display", "flex");
-		var plusscoreboard = '';
-		for(var i = 0; i <= game.scoreboard.length; i++){
-			if(i == 0){
-				plusscoreboard = "<table border = '1'><tr><td>등수</td><td>이름</td><td>점수</td></tr>";
-				$("#scoreboard-nonexit").append(plusscoreboard);
-			}
-			else{
-				plusscoreboard = "<tr><td>" + i + "</td><td>" + game.scoreboard[i-1].name "</td><td>" + game.scoreboard[i-1].score + "</td></tr>";
-				$("#scoreboard-nonexit").append(plusscoreboard);
-			}
+		for(var i = 0; i < game.scoreboard.length; i++){
+			console.log(game.scoreboard[i]);
+			$("#scoreboard-table > tbody").append("<tr><td>" + i + "</td><td>" + game.scoreboard[i].name + "</td><td>" + game.scoreboard[i].score + "</td></tr>");
 		}
-		$("#scoreboard-nonexit").append("</table>");
+		// $("#scoreboard-nonexit").append("</table>");
 	});
 	$("#scoreboard-exit-btn").click(function(){
 		$(".main-btn").css("display", "block");
