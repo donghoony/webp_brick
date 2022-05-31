@@ -86,23 +86,28 @@ $(document).ready(function(){
 		$(".main-btn").css("display", "none");
 		$("#select-stage").css("display", "flex");
 	});
+
+
+	var init = ()=>{game.life = 3; game.score = 0; game.stars = 1;$("#score").text(0);};
 	$("#stage1").click(function(){
 		$("#select-stage").hide();
 		game.runningBgm.pause();
 		game.playSound("레벨1.ogg",true);
+		init();
 		game.startLevel(0);
 	});
 	$("#stage2").click(function(){
 		$("#select-stage").hide();
 		game.runningBgm.pause();
 		game.playSound("레벨1.ogg",true);
+		init();
 		game.startLevel(1);
 	});
 	$("#stage3").click(function(){
 		$("#select-stage").hide();
 		game.runningBgm.pause();
 		game.playSound("레벨1.ogg",true);
-		// 게임을 시작합니다.
+		init();
 		game.startLevel(2);
 	});
 	$("#back").click(function(){
@@ -156,10 +161,7 @@ $(document).ready(function(){
 	});
 	$("#restart").click(function(){
 		$("#failure").hide();
-		game.score = 0;
-		game.life = 3;
-		$("#score").text(0);
-		game.run();
+		game.run(game.currentLevel);
 	});
 	$("#goto-menu").click(function(){
 		$("#failure").hide();
@@ -403,7 +405,6 @@ class Game{
 		// 현재 진행중인 Interval 제거
 		clearInterval(this.gameLoop);
 		this.currentLevel = level;
-		this.life = 3;
 		this.balls = [];
 		this.activeItems.forEach(item=>{item.deactivate();});
 		this.activeItems = [];
@@ -423,6 +424,9 @@ class Game{
 	}
 
 	run(){
+		this.life = 3;
+		this.score = 0;
+		$("#score").text(0);
 		this.startLevel(0);
 		this.status = PRE_READY;
 	}
