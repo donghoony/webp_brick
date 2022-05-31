@@ -237,3 +237,14 @@
 	top: 200px;
 	right: 50px;
 }
+
+#scoreboard-exit-btn{
+	width : 60px;
+	height : 30px;
+	margin : 10px;
+	background-image: url("src/wood.png");
+	background-size: contain;
+	background-position: bottom;
+	font-size : 20px;
+	text-align : center;
+}
