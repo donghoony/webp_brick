@@ -2,8 +2,9 @@
 	font-family: "AngryBird";
 	src: url("src/AngryBirdsText-Regular.ttf")
 }
+
 * {margin: 0; padding: 0;
-	font-family: AngryBird, "Pretendard ExtraLight", serif;
+	font-family: AngryBird, "Pretendard", serif;
 	font-weight: bold;
 }
 body{
@@ -334,6 +335,7 @@ td{
 }
 
 .tutorial-row{
+	font-weight: 300;
 	width: 400px;
 	height: 55px;
 	line-height: 50px;
