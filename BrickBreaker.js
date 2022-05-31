@@ -309,7 +309,7 @@ class Game{
 	}
 
 	addScore(score){
-		this.score += score * game.multiply;
+		this.score += score * game.scoreMultiply;
     	$("#score").text(this.score);
 	}
 
