@@ -15,6 +15,13 @@ $(document).ready(function(){
 				break;
 			case RUNNING:
 				// Ability
+				if(game.abilityCooldown <= 0){
+					game.abilityCooldown = game.initAbilityCooldown;
+					game.abilityDuration = game.initAbilityDuration;
+					if(game.activateAbility != null)
+						game.activateAbility();
+					game.hasAbility = true;
+				}
 				break;
 			case PRE_READY:
 				game.status = READY;
@@ -101,6 +108,8 @@ $(document).ready(function(){
 	$("#redbird").click(function(){
 		game.settings.character = redCharacter;
 		game.settings.characterNumber = 1;
+		game.activateAbility = null;
+		game.deactivateAbility = null;
 		$(".bird").css("filter", "grayscale(100)");
 		game.playSound("select1.ogg");
 		$(this).css("filter", "grayscale(0)");
@@ -108,6 +117,8 @@ $(document).ready(function(){
 	$("#bluebird").click(function(){
 		game.settings.character = blueCharacter;
 		game.settings.characterNumber = 2;
+		game.activateAbility = blueCharacter.activate;
+		game.deactivateAbility = null;
 		$(".bird").css("filter", "grayscale(100)");
 		game.playSound("select2.ogg");
 		$(this).css("filter", "grayscale(0)");
@@ -115,6 +126,8 @@ $(document).ready(function(){
 	$("#yellowbird").click(function(){
 		game.settings.character = yellowCharacter;
 		game.settings.characterNumber = 3;
+		game.activateAbility = yellowCharacter.activate;
+		game.deactivateAbility = yellowCharacter.deactivate;
 		$(".bird").css("filter", "grayscale(100)");
 		game.playSound("select3.ogg");
 		$(this).css("filter", "grayscale(0)");
@@ -178,7 +191,10 @@ class Game{
 		this.activateAbility = this.settings.character.activate;
 		this.deactivateAbility = this.settings.character.deactivate;
 		this.initAbilityCooldown = 1000;
-		this.abilityCooldown = 1000;
+		this.abilityCooldown = 0;
+		this.initAbilityDuration = 300;
+		this.abilityDuration = 300;
+		this.hasAbility = false;
 	}
 
 	setBackgroundImage(source){
@@ -238,7 +254,19 @@ class Game{
 	}
 
 	drawObjects(){
-		this.abilityCooldown--;
+		if(this.hasAbility){
+			this.abilityDuration--;
+			if (this.abilityDuration <= 0){
+				if (this.deactivateAbility != null){
+					this.deactivateAbility();
+					console.log("DEACTIVATE");
+				}
+				this.hasAbility = false;
+			}
+		}
+		if(this.abilityCooldown > 0)
+			this.abilityCooldown--;
+
 		if (this.bricks.length === 0){
 			clearInterval(this.gameLoop);
 			if (this.currentLevel === 2){
@@ -502,21 +530,19 @@ class blueCharacter extends Ball {
 	constructor(x, y, angle, speed, radius, running,){
 		super(x, y, angle, speed, radius, running, "blue.png");
 	}
-	activate() {
+	static activate() {
 		let ballLength = game.balls.length + 1;
-		$("#brick-board").click(function() {
-			for(let i = 0; i < ballLength; i++) {
-				let ball = game.balls[i];
-				let angle1 = ball.angle - (PI / 6);
-				let angle2 = ball.angle + (PI / 6);
-				game.balls.push(
-					new blueCharacter(ball.x, ball.y, angle1, ball.speed, ball.radius, true, "blue.png")
-				);
-				game.balls.push(
-					new blueCharacter(ball.x, ball.y, angle2, ball.speed, ball.radius, true, "blue.png")
-				);
-			}
-		});
+		for(let i = 0; i < ballLength; i++) {
+			let ball = game.balls[i];
+			let angle1 = ball.angle - (PI / 6);
+			let angle2 = ball.angle + (PI / 6);
+			game.balls.push(
+				new blueCharacter(ball.x, ball.y, angle1, ball.speed, ball.radius, true)
+			);
+			game.balls.push(
+				new blueCharacter(ball.x, ball.y, angle2, ball.speed, ball.radius, true)
+			);
+		}
 	}
 }	// blue는 특정 조건을 만족하면 세 마리로 분열된다.
 
@@ -526,12 +552,10 @@ class yellowCharacter extends Ball {
 		//this.duration = duration;
 	}
 	static activate() {
-		$("#brick-board").click(function() {
-			this.speed += 10;
-		});
+		game.paddle.speed += 30;
 	}
 	static deactivate() {
-		this.speed -= 10;
+		game.paddle.speed -= 30;
 	}
 }	// yellow는 특정 조건을 만족하면 속도가 빨라진다.
 
