@@ -148,7 +148,7 @@ class Game{
 		this.runningBgm = null;
 		this.currentBackgroundImage=null;
 		this.drawBackgroundImage(this.canvas,"시작화면2.jpg");
-		this.multiply = 1.0;
+		this.scoreMultiply = 1.0;
 
 		this.heartImage = new Image();
 		this.heartImage.src = "src/heart.png";
@@ -309,8 +309,8 @@ class Game{
 	}
 
 	addScore(score){
-		this.score += score*game.multiply;
-    $("#score").text(this.score);
+		this.score += score * game.multiply;
+    	$("#score").text(this.score);
 	}
 
 	playSound(source, loop){
@@ -321,9 +321,8 @@ class Game{
 			audio.volume = this.settings.bgVolume;
 			this.runningBgm = audio;
 		}
-		else{
+		else
 			audio.volume = this.settings.fxVolume;
-		}
 		audio.play();
 	}
 
