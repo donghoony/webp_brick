@@ -77,8 +77,8 @@ $(document).ready(function(){
 		});
 		mouseX = event.pageX - $(window).width()/2 + 250;
 	});
-	$("#before-start").click(function(){
-		$(this).slideUp();
+	$("#before-start-btn").click(function(){
+		$(this).parent().slideUp(180);
 		$(".main-btn").show();
 		game.playSound("시작화면.ogg",true);
 	});
