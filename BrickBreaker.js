@@ -801,13 +801,13 @@ class speedup extends Item{
 class Score12 extends Item{
 	constructor(yIndex, xIndex, paddle){
 		super(yIndex, xIndex, paddle, 400);
-		this.image.src = "src/egg2.png";
+		this.image.src = "src/egg3.png";
 	}
 	activate(){
-		game.multiply += 0.2;
+		game.scoreMultiply += 0.2;
 	}
 	deactivate(){
-		game.multiply -= 0.2;
+		game.scoreMultiply -= 0.2;
 		game.playSound("padd-.ogg",false);
 	}
 }
