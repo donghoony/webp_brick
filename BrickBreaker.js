@@ -56,6 +56,10 @@ $(document).ready(function(){
 		$(".main-btn").show();
 	})
 	$(document).mousemove(function(event){
+		$("#cursor").css({
+			left: (event.pageX + 3) + "px",
+			top: (event.pageY + 3) + "px"
+		});
 		mouseX = event.pageX - $(window).width()/2 + 250;
 	});
 	$("#before-start").click(function(){
