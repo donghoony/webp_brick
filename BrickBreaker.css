@@ -166,12 +166,13 @@ img{
 	position: absolute;
 	line-height: 800px;
 	font-size: 50px;
-	top: 0; left: 0;
-	width: 500px; height: 800px;
+	top: 500px; left: 0;
+	width: 500px; height: 300px;
 	background: transparent;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	z-index: 3;
 }
 
 .select-radio{
