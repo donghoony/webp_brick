@@ -15,12 +15,25 @@ $(document).ready(function(){
 				break;
 			case RUNNING:
 				// Ability
+				if(game.abilityCooldown <= 0){
+					game.abilityCooldown = game.initAbilityCooldown;
+					game.abilityDuration = game.initAbilityDuration;
+					if(game.activateAbility != null)
+						game.activateAbility();
+					game.hasAbility = true;
+				}
 				break;
 			case PRE_READY:
 				game.status = READY;
 				break;
 		}
 	});
+	$(".wooden-btn").click(function(){
+		game.playSound("menuconfirm.ogg", false);
+	}).hover(function(){
+		game.playSound("menuhover.ogg", false);
+	}, ()=>{});
+
 	$("#option-btn").click(function(){
 		$(".main-btn").css("display", "none");
 		$("#settings").css("display", "flex");
@@ -44,11 +57,15 @@ $(document).ready(function(){
 	$("#sfx-volume").on("input", function(){
 		game.settings.fxVolume = $(this).val() * 0.007;
 	})
-	$("#submit-setting").on("click", function(){
-		$("#settings").hide();
+	$(".back").click(function(){
+		$(".popup").hide();
 		$(".main-btn").show();
 	})
 	$(document).mousemove(function(event){
+		$("#cursor").css({
+			left: (event.pageX + 3) + "px",
+			top: (event.pageY + 3) + "px"
+		});
 		mouseX = event.pageX - $(window).width()/2 + 250;
 	});
 	$("#before-start").click(function(){
@@ -88,10 +105,26 @@ $(document).ready(function(){
 	$("#scoreboard-btn").click(function() {
 		$(".main-btn").css("display", "none");
 		$("#scoreboard").css("display", "flex");
+		for(var i = 0; i < 8; i++){
+			for(var j = 0; j < 3; j++)
+				$("#scoreboard-table > tbody > tr:nth-child(" + (i+2) + ") > td").eq(j).text(j === 0 ? i+1 : "");
+		}
+		for(var i = 0; i < game.scoreboard.length; i++){
+			var row = $("#scoreboard-table > tbody > tr:nth-child(" + (i+2) + ") > td");
+			row.eq(1).text(game.scoreboard[i].name);
+			row.eq(2).text(game.scoreboard[i].score);
+		}
 	});
+	$("#scoreboard-exit-btn").click(function(){
+		$(".main-btn").css("display", "block");
+		$("#scoreboard").css("display", "none");
+		$("#scoreboard-table > tbody > .data").remove();
+	})
 	$("#redbird").click(function(){
 		game.settings.character = redCharacter;
 		game.settings.characterNumber = 1;
+		game.activateAbility = null;
+		game.deactivateAbility = null;
 		$(".bird").css("filter", "grayscale(100)");
 		game.playSound("select1.ogg");
 		$(this).css("filter", "grayscale(0)");
@@ -99,6 +132,8 @@ $(document).ready(function(){
 	$("#bluebird").click(function(){
 		game.settings.character = blueCharacter;
 		game.settings.characterNumber = 2;
+		game.activateAbility = blueCharacter.activate;
+		game.deactivateAbility = null;
 		$(".bird").css("filter", "grayscale(100)");
 		game.playSound("select2.ogg");
 		$(this).css("filter", "grayscale(0)");
@@ -106,13 +141,17 @@ $(document).ready(function(){
 	$("#yellowbird").click(function(){
 		game.settings.character = yellowCharacter;
 		game.settings.characterNumber = 3;
+		game.activateAbility = yellowCharacter.activate;
+		game.deactivateAbility = yellowCharacter.deactivate;
 		$(".bird").css("filter", "grayscale(100)");
 		game.playSound("select3.ogg");
 		$(this).css("filter", "grayscale(0)");
 	});
 	$("#restart").click(function(){
 		$("#failure").hide();
+		game.score = 0;
 		game.life = 3;
+		$("#score").text(0);
 		game.run();
 	});
 	$("#goto-menu").click(function(){
@@ -120,6 +159,20 @@ $(document).ready(function(){
 		$(".main-btn").show();
 		game.setBackgroundImage("시작화면3.png");
 		game.drawBackgroundImage();
+	});
+	$("#submit-btn").click(function(){
+		game.scoreboard.push({ name : $("#submit-input").val() , score: game.score});
+		$("#clear-stage").css("display","none");
+		$(".main-btn").show();
+		game.setBackgroundImage("시작화면3.png");
+		game.drawBackgroundImage();
+		$("#submit-input").val('');
+		game.playSound("시작화면.ogg", true);
+		$("#score").text(0);
+		game.lifeCanvas.clearRect(0, 0, 250, 40);
+		game.scoreboard.sort(function(a, b){
+			return b.score - a.score;
+		});
 	});
 });
 
@@ -156,7 +209,12 @@ class Game{
 		this.activateAbility = this.settings.character.activate;
 		this.deactivateAbility = this.settings.character.deactivate;
 		this.initAbilityCooldown = 1000;
-		this.abilityCooldown = 1000;
+		this.abilityCooldown = 0;
+		this.initAbilityDuration = 300;
+		this.abilityDuration = 300;
+		this.hasAbility = false;
+
+		this.stars = 1;
 	}
 
 	setBackgroundImage(source){
@@ -170,7 +228,7 @@ class Game{
 
 	drawBackgroundImage(){
 		if(this.currentBackgroundImage!=null)
-			this.canvas.drawImage(this.currentBackgroundImage,0,0,500,800);
+			this.canvas.drawImage(this.currentBackgroundImage,0,0, 500, 800);
 	}
 
 	drawActiveItemDuration(){
@@ -215,12 +273,61 @@ class Game{
 		}
 	}
 
+	finale(){
+		var ease = function (x, t, b, c, d, s) {
+			if (s == undefined) s = 1.70158;
+			return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
+		};
+		var s1 = new Audio("src/audio/star_1.ogg");
+		var s2 = new Audio("src/audio/star_2.ogg");
+		var s3 = new Audio("src/audio/star_3.ogg");
+		s1.volume = s2.volume = s3.volume = this.settings.fxVolume;
+		$(".star-img").css("height", "0");
+		s1.addEventListener("play", ()=>{
+			if (this.stars >= 2){
+				setTimeout(()=>{
+					s2.play();
+					$("#star2").animate({height: "100px"}, 200, ease);
+					}, 700);
+			}
+		})
+		s2.addEventListener("play", ()=>{
+			if (this.stars >= 2){
+				setTimeout(()=>{
+					s3.play();
+					$("#star3").animate({height: "100px"}, 100, ease);
+					}, 700);
+			}
+		})
+		setTimeout(()=>{
+			s1.play();
+			$("#star1").animate({height: "100px"}, 100,ease);
+		}, 2000);
+	}
+
 	drawObjects(){
-		this.abilityCooldown--;
+		if(this.hasAbility){
+			this.abilityDuration--;
+			if (this.abilityDuration <= 0){
+				if (this.deactivateAbility != null){
+					this.deactivateAbility();
+					console.log("DEACTIVATE");
+				}
+				this.hasAbility = false;
+			}
+		}
+		if(this.abilityCooldown > 0)
+			this.abilityCooldown--;
+
 		if (this.bricks.length === 0){
 			clearInterval(this.gameLoop);
 			if (this.currentLevel === 2){
-				// CLEAR
+				this.runningBgm.pause();
+				$("#clear-stage").css("display","flex");
+				this.playSound("레벨성공.ogg", false);
+				this.playSound("birds_outro.ogg", false);
+				this.finale();
+
 			}
 			else
 				this.nextLevel();
@@ -235,6 +342,7 @@ class Game{
 				this.status = NOT_RUNNING;
 				game.playSound("레벨실패.ogg",false);
 				$("#failure").css("display", "flex");
+
 			}
 			else{
 				this.activeItems.forEach(item=>{item.deactivate();});
@@ -298,6 +406,7 @@ class Game{
 
 	nextLevel(){
 		this.status = NOT_RUNNING;
+		this.stars++;
 		this.startLevel(++this.currentLevel);
 		game.playSound("레벨성공.ogg",false);
 	}
@@ -476,21 +585,19 @@ class blueCharacter extends Ball {
 	constructor(x, y, angle, speed, radius, running,){
 		super(x, y, angle, speed, radius, running, "blue.png");
 	}
-	activate() {
+	static activate() {
 		let ballLength = game.balls.length + 1;
-		$("#brick-board").click(function() {
-			for(let i = 0; i < ballLength; i++) {
-				let ball = game.balls[i];
-				let angle1 = ball.angle - (PI / 6);
-				let angle2 = ball.angle + (PI / 6);
-				game.balls.push(
-					new blueCharacter(ball.x, ball.y, angle1, ball.speed, ball.radius, true, "blue.png")
-				);
-				game.balls.push(
-					new blueCharacter(ball.x, ball.y, angle2, ball.speed, ball.radius, true, "blue.png")
-				);
-			}
-		});
+		for(let i = 0; i < ballLength; i++) {
+			let ball = game.balls[i];
+			let angle1 = ball.angle - (PI / 6);
+			let angle2 = ball.angle + (PI / 6);
+			game.balls.push(
+				new blueCharacter(ball.x, ball.y, angle1, ball.speed, ball.radius, true)
+			);
+			game.balls.push(
+				new blueCharacter(ball.x, ball.y, angle2, ball.speed, ball.radius, true)
+			);
+		}
 	}
 }	// blue는 특정 조건을 만족하면 세 마리로 분열된다.
 
@@ -500,12 +607,10 @@ class yellowCharacter extends Ball {
 		//this.duration = duration;
 	}
 	static activate() {
-		$("#brick-board").click(function() {
-			this.speed += 10;
-		});
+		game.paddle.speed += 30;
 	}
 	static deactivate() {
-		this.speed -= 10;
+		game.paddle.speed -= 30;
 	}
 }	// yellow는 특정 조건을 만족하면 속도가 빨라진다.
 
@@ -699,13 +804,13 @@ class speedup extends Item{
 class Score12 extends Item{
 	constructor(yIndex, xIndex, paddle){
 		super(yIndex, xIndex, paddle, 400);
-		this.image.src = "src/egg2.png";
+		this.image.src = "src/egg3.png";
 	}
 	activate(){
-		game.multiply += 0.2;
+		game.scoreMultiply += 0.2;
 	}
 	deactivate(){
-		game.multiply -= 0.2;
+		game.scoreMultiply -= 0.2;
 		game.playSound("padd-.ogg",false);
 	}
 }

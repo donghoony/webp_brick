@@ -8,6 +8,7 @@
 		<script src="BrickBreaker.js"></script>
 	</head>
 	<body>
+		<div id="cursor"></div>
 		<div id="main-div">
 			<div id="info">
 				<div id="canvas_info">
@@ -15,8 +16,7 @@
 					<canvas id="item-duration" width="250" height="40"></canvas>
 				</div>
 				<div id="text_info">
-					<p id="user"></p>
-					<p id="score"></p>
+					<p id="score">0</p>
 				</div>
 			</div>
 			<div id="canvas-wrapper">
@@ -46,11 +46,30 @@
 						<div class="setting-name">FX Volume</div>
 						<input type="range" min="0" max="100" value="50" class="slider" id="sfx-volume">
 					</div>
-					<div id="submit-setting">OK</div>
+					<div id="submit-setting" class="back wooden-btn">OK</div>
 				</div>
 
-				<div id="scoreboard">
-
+				<div id="scoreboard" class="popup">
+					<div id="scoreboard-nonexit">
+						<table id="scoreboard-table">
+							<tbody>
+								<tr>
+									<td width="50">#</td>
+									<td width="200">NAME</td>
+									<td width="100">SCORE</td>
+								</tr>
+							<tr><td></td><td></td><td></td></tr>
+							<tr><td></td><td></td><td></td></tr>
+							<tr><td></td><td></td><td></td></tr>
+							<tr><td></td><td></td><td></td></tr>
+							<tr><td></td><td></td><td></td></tr>
+							<tr><td></td><td></td><td></td></tr>
+							<tr><td></td><td></td><td></td></tr>
+							<tr><td></td><td></td><td></td></tr>
+							</tbody>
+						</table>
+					</div>
+					<div id='scoreboard-exit-btn' class="wooden-btn">BACK</div>
 				</div>
 
 				<div id="failure" class="popup">
@@ -66,9 +85,21 @@
 					<div class="wooden-btn" id="stage1">Stage 1</div>
 					<div class="wooden-btn" id="stage2">Stage 2</div>
 					<div class="wooden-btn" id="stage3">Stage 3</div>
+					<div class="wooden-btn back">BACK</div>
 				</div>
 
 				<div id="clear-stage" class="popup">
+					<div id="star">
+						<img src="src/star1.png" id="star1" class="star-img">
+						<img src="src/star2.png" id="star2" class="star-img">
+						<img src="src/star3.png" id="star3" class="star-img">
+					</div>
+					YOU WIN!
+					<div id="clear-image">
+						<img src="src/clearimg.png">
+						<img src="src/BG.png" id="backlight">
+					</div>
+
 					<div id="submit-board">
 						<input type="text" id="submit-input">
 					</div>
