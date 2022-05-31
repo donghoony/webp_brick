@@ -293,6 +293,7 @@ td{
 	top: 10px;
 	z-index: -1;
 }
+
 @keyframes rotating {
 	from{
 		transform: rotate(0deg);

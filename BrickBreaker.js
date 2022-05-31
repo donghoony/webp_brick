@@ -168,6 +168,8 @@ $(document).ready(function(){
 		game.drawBackgroundImage();
 		$("#submit-input").val('');
 		game.playSound("시작화면.ogg", true);
+		$("#score").text(0);
+		game.lifeCanvas.clearRect(0, 0, 250, 40);
 		game.scoreboard.sort(function(a, b){
 			return b.score - a.score;
 		});
@@ -299,7 +301,7 @@ class Game{
 		setTimeout(()=>{
 			s1.play();
 			$("#star1").animate({height: "100px"}, 100,ease);
-		}, 1000);
+		}, 2000);
 	}
 
 	drawObjects(){
