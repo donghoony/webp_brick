@@ -228,7 +228,7 @@ class Game{
 
 	drawBackgroundImage(){
 		if(this.currentBackgroundImage!=null)
-			this.canvas.drawImage(this.currentBackgroundImage,0,0,500,800);
+			this.canvas.drawImage(this.currentBackgroundImage,0,0, 500, 800);
 	}
 
 	drawActiveItemDuration(){
@@ -281,6 +281,7 @@ class Game{
 		var s1 = new Audio("src/audio/star_1.ogg");
 		var s2 = new Audio("src/audio/star_2.ogg");
 		var s3 = new Audio("src/audio/star_3.ogg");
+		s1.volume = s2.volume = s3.volume = this.settings.fxVolume;
 		$(".star-img").css("height", "0");
 		s1.addEventListener("play", ()=>{
 			if (this.stars >= 2){
