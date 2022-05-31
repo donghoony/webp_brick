@@ -187,6 +187,7 @@ img{
 }
 
 #failure{
+	color: white;
 	display: none;
 	font-size: 50px;
 	flex-direction: column;

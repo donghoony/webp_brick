@@ -88,25 +88,28 @@ $(document).ready(function(){
 	});
 
 
-	var init = ()=>{game.life = 3; game.score = 0; game.stars = 1;$("#score").text(0);};
+	var init = ()=>{
+		game.life = 3;
+		game.score = 0;
+		game.stars = 1;
+		$("#score").text(0);
+		game.itemCanvas.clearRect(0, 0, 250, 40);
+	};
 	$("#stage1").click(function(){
 		$("#select-stage").hide();
 		game.runningBgm.pause();
-		game.playSound("레벨1.ogg",true);
 		init();
 		game.startLevel(0);
 	});
 	$("#stage2").click(function(){
 		$("#select-stage").hide();
 		game.runningBgm.pause();
-		game.playSound("레벨1.ogg",true);
 		init();
 		game.startLevel(1);
 	});
 	$("#stage3").click(function(){
 		$("#select-stage").hide();
 		game.runningBgm.pause();
-		game.playSound("레벨1.ogg",true);
 		init();
 		game.startLevel(2);
 	});
@@ -161,11 +164,13 @@ $(document).ready(function(){
 	});
 	$("#restart").click(function(){
 		$("#failure").hide();
-		game.run(game.currentLevel);
+		init();
+		game.startLevel(game.currentLevel);
 	});
 	$("#goto-menu").click(function(){
 		$("#failure").hide();
 		$(".main-btn").show();
+		init();
 		game.setBackgroundImage("시작화면3.png");
 		game.drawBackgroundImage();
 	});
@@ -401,6 +406,8 @@ class Game{
 
 	startLevel(level){
 		// 게임을 시작하기 위한 메서드 묶음
+		this.runningBgm.pause();
+		this.playSound("ingame" + (level + 1) + ".ogg", true);
 		this.status = PRE_READY;
 		// 현재 진행중인 Interval 제거
 		clearInterval(this.gameLoop);
@@ -410,7 +417,7 @@ class Game{
 		this.activeItems = [];
 		this.fallingItems = [];
 		this.build(levels[level]);
-		this.setBackgroundImage("배경화면1.png");
+		this.setBackgroundImage("stage" + (level + 1) + ".png");
 		let initBall = new this.settings.character(0, 0, Math.random() * PI / 2 + 1.25 * PI, 5, 12, false);
 		this.balls.push(initBall);
 		this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
@@ -419,6 +426,7 @@ class Game{
 	nextLevel(){
 		this.status = NOT_RUNNING;
 		this.stars++;
+
 		this.startLevel(++this.currentLevel);
 		game.playSound("레벨성공.ogg",false);
 	}
@@ -767,6 +775,7 @@ class Item{
 		if (this.paddleCollision())
 		{
 			this.activate();
+			game.addScore(50);
 			game.activeItems.push(this);
 			this.isFalling = false;
 			game.playSound("big_bird.ogg",false);
@@ -839,8 +848,8 @@ class Settings{
 	constructor() {
 		this.character = redCharacter;
 		this.characterNumber = 1;
-		this.fxVolume = 1;
-		this.bgVolume = 1;
+		this.fxVolume = 0.35;
+		this.bgVolume = 0.35;
 	}
 }
 
