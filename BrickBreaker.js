@@ -1,12 +1,11 @@
-var game, mouseX;
+let game, mouseX;
 const PI = Math.PI;
 
 $(document).ready(function(){
-	var context = document.getElementById("brick-board").getContext("2d");
+	let context = document.getElementById("brick-board").getContext("2d");
 	game = new Game(context, 3);
 
 	$(document).click(function(){
-		console.log(game.status);
 		switch(game.status){
 			case NOT_RUNNING:
 				break;
@@ -20,7 +19,6 @@ $(document).ready(function(){
 			case PRE_READY:
 				game.status = READY;
 				break;
-
 		}
 	});
 	$("#option-btn").click(function(){
@@ -29,7 +27,7 @@ $(document).ready(function(){
 		switch(game.settings.character){
 			case redCharacter:
 				$("#redbird").css("filter", "grayscale(0)");
-				break
+				break;
 			case blueCharacter:
 				$("#bluebird").css("filter", "grayscale(0)");
 				break;
@@ -50,11 +48,9 @@ $(document).ready(function(){
 		$("#settings").hide();
 		$(".main-btn").show();
 	})
-
 	$(document).mousemove(function(event){
 		mouseX = event.pageX - $(window).width()/2 + 250;
 	});
-
 	$("#before-start").click(function(){
 		$(this).hide();
 		game.setBackgroundImage("시작화면3.png");
@@ -62,7 +58,6 @@ $(document).ready(function(){
 		$(".main-btn").show();
 		game.playSound("시작화면.ogg",true);
 	});
-
 	$("#start-btn").click(function() {
 		$(".main-btn").css("display", "none");
 		$("#select-stage").css("display", "flex");
@@ -71,14 +66,12 @@ $(document).ready(function(){
 		$("#select-stage").hide();
 		game.runningBgm.pause();
 		game.playSound("레벨1.ogg",true);
-		// 게임을 시작합니다.
 		game.startLevel(0);
 	});
 	$("#stage2").click(function(){
 		$("#select-stage").hide();
 		game.runningBgm.pause();
 		game.playSound("레벨1.ogg",true);
-		// 게임을 시작합니다.
 		game.startLevel(1);
 	});
 	$("#stage3").click(function(){
@@ -88,12 +81,14 @@ $(document).ready(function(){
 		// 게임을 시작합니다.
 		game.startLevel(2);
 	});
-
+	$("#back").click(function(){
+		$("#select-stage").hide();
+		$(".main-btn").show();
+	})
 	$("#scoreboard-btn").click(function() {
 		$(".main-btn").css("display", "none");
 		$("#scoreboard").css("display", "flex");
 	});
-
 	$("#redbird").click(function(){
 		game.settings.character = redCharacter;
 		game.settings.characterNumber = 1;
@@ -101,7 +96,6 @@ $(document).ready(function(){
 		game.playSound("select1.ogg");
 		$(this).css("filter", "grayscale(0)");
 	});
-
 	$("#bluebird").click(function(){
 		game.settings.character = blueCharacter;
 		game.settings.characterNumber = 2;
@@ -109,7 +103,6 @@ $(document).ready(function(){
 		game.playSound("select2.ogg");
 		$(this).css("filter", "grayscale(0)");
 	});
-
 	$("#yellowbird").click(function(){
 		game.settings.character = yellowCharacter;
 		game.settings.characterNumber = 3;
@@ -117,13 +110,11 @@ $(document).ready(function(){
 		game.playSound("select3.ogg");
 		$(this).css("filter", "grayscale(0)");
 	});
-
 	$("#restart").click(function(){
 		$("#failure").hide();
 		game.life = 3;
 		game.run();
 	});
-
 	$("#goto-menu").click(function(){
 		$("#failure").hide();
 		$(".main-btn").show();
@@ -169,7 +160,7 @@ class Game{
 	}
 
 	setBackgroundImage(source){
-		var bgI=new Image();
+		let bgI=new Image();
 		bgI.src="src/backgroundimg/"+source;
 		bgI.onload=function(){
 			game.drawBackgroundImage();
@@ -184,7 +175,7 @@ class Game{
 
 	drawActiveItemDuration(){
 		this.itemCanvas.clearRect(0, 0, 250, 40);
-		for(var i = 0; i < this.activeItems.length; i++){
+		for(let i = 0; i < this.activeItems.length; i++){
 			this.itemCanvas.globalAlpha = (this.activeItems[i].duration / this.activeItems[i].initDuration);
 			this.itemCanvas.drawImage(this.activeItems[i].image, 10 + 30 * i, 5, 25, 30);
 		}
@@ -219,7 +210,7 @@ class Game{
 	}
 
 	drawBricks(){
-		for(var i = 0; i < this.bricks.length; i++){
+		for(let i = 0; i < this.bricks.length; i++){
 			if(!this.bricks[i].isDestroyed) this.bricks[i].draw(this.canvas);
 		}
 	}
@@ -288,29 +279,22 @@ class Game{
 	}
 
 	startLevel(level){
+		// 게임을 시작하기 위한 메서드 묶음
 		this.status = PRE_READY;
-		// 게임을 시작하기 위한 메서드 묶음입니다
 		// 현재 진행중인 Interval 제거
 		clearInterval(this.gameLoop);
-		// 레벨 설정
 		this.currentLevel = level;
-		// 공 전부 지우기
 		this.life = 3;
 		this.balls = [];
-		// 현재 발동중인 아이템 상태 지우기
 		this.activeItems.forEach(item=>{item.deactivate();});
 		this.activeItems = [];
-		// 현재 떨어지는 아이템 지우기
 		this.fallingItems = [];
-		// 레벨 작성
 		this.build(levels[level]);
-		// 처음에는 공이 패들과 붙어 있고, 사용자가 클릭 시 위로 나아감
 		this.setBackgroundImage("배경화면1.png");
-
-		var initBall = new this.settings.character(0, 0, Math.random() * PI / 2 + 1.25 * PI, 5, 12, false);
+		let initBall = new this.settings.character(0, 0, Math.random() * PI / 2 + 1.25 * PI, 5, 12, false);
 		this.balls.push(initBall);
-		this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
 
+		this.gameLoop = setInterval(()=>{this.drawObjects()}, 10);
 	}
 
 	nextLevel(){
@@ -330,7 +314,7 @@ class Game{
 	}
 
 	playSound(source, loop){
-		var audio = new Audio();
+		let audio = new Audio();
 		audio.src = "src/audio/" + source;
 		audio.loop = loop;
 		if(loop){
@@ -345,7 +329,7 @@ class Game{
 
 	drawLife() {
 		this.lifeCanvas.clearRect(0, 0, 250, 40);
-		for(var i = 0; i < this.life; i++){
+		for(let i = 0; i < this.life; i++){
 			this.lifeCanvas.drawImage(this.heartImage, 20 + 40 * i, 0, 40, 40);
 		}
 	}
@@ -411,13 +395,13 @@ class Ball{
 		let new_y = this.y + Math.sin(this.angle) * this.speed;
 		let new_x = this.x + Math.cos(this.angle) * this.speed;
 
-		var ccw = (x1, y1, x2, y2, x3, y3) => {
+		let ccw = (x1, y1, x2, y2, x3, y3) => {
 			let ans = (x2-x1) * (y3-y1) - (y2-y1) * (x3-x1);
 			if (ans < 0) return -1;
 			else if (ans > 0) return 1;
 			else return 0;
 		};
-		var cross = (x1, y1, x2, y2, x3, y3, x4, y4) => {
+		let cross = (x1, y1, x2, y2, x3, y3, x4, y4) => {
 			return (ccw(x1, y1, x2, y2, x3, y3) * ccw(x1, y1, x2, y2, x4, y4) <= 0) &&
 				(ccw(x3, y3, x4, y4, x1, y1) * ccw(x3, y3, x4, y4, x2, y2) <= 0);
 		}
@@ -497,10 +481,10 @@ class blueCharacter extends Ball {
 	activate() {
 		let ballLength = game.balls.length + 1;
 		$("#brick-board").click(function() {
-			for(var i = 0; i < ballLength; i++) {
-				var ball = game.balls[i];
-				var angle1 = ball.angle - (PI / 6);
-				var angle2 = ball.angle + (PI / 6);
+			for(let i = 0; i < ballLength; i++) {
+				let ball = game.balls[i];
+				let angle1 = ball.angle - (PI / 6);
+				let angle2 = ball.angle + (PI / 6);
 				game.balls.push(
 					new blueCharacter(ball.x, ball.y, angle1, ball.speed, ball.radius, true, "blue.png")
 				);
@@ -674,9 +658,9 @@ class doubleBallItem extends Item{
 	}
 	activate() {
 		let ballLength = game.balls.length;
-		for(var i = 0; i < ballLength; i++){
-			var ball = game.balls[i];
-			var newAngle = Math.random() * PI + (ball.angle - PI/2);
+		for(let i = 0; i < ballLength; i++){
+			let ball = game.balls[i];
+			let newAngle = Math.random() * PI + (ball.angle - PI/2);
 			game.balls.push(
 				new game.settings.character(ball.x, ball.y, newAngle, ball.speed, ball.radius, true)
 			);
