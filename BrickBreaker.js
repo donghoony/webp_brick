@@ -18,8 +18,10 @@ $(document).ready(function(){
 				if(game.abilityCooldown <= 0){
 					game.abilityCooldown = game.initAbilityCooldown;
 					game.abilityDuration = game.initAbilityDuration;
-					if(game.activateAbility != null)
+					if(game.activateAbility != null) {
 						game.activateAbility();
+						game.paddle.isPossible = false;
+					}
 					game.hasAbility = true;
 				}
 				break;
@@ -315,8 +317,12 @@ class Game{
 				this.hasAbility = false;
 			}
 		}
-		if(this.abilityCooldown > 0)
+		if(this.abilityCooldown > 0) {
 			this.abilityCooldown--;
+			if(this.abilityCooldown <= 0 && this.abilityDuration <= 0) {
+				this.paddle.isPossible = true;
+			}
+		}
 
 		if (this.bricks.length === 0){
 			clearInterval(this.gameLoop);
@@ -622,10 +628,15 @@ class Paddle{
 		this.size = size;
 		this.image = new Image();
 		this.image.src = "src/paddle.png";
+		this.isPossible = true;
 	}
 
 	draw(canvas){
+		if(this.isPossible) {
+			canvas.filter = "hue-rotate(90deg)";
+		}
 		canvas.drawImage(this.image, this.x, this.y, this.size, this.height);
+		canvas.filter = "none"
 	}
 
 	calculate(){
