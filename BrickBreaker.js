@@ -547,7 +547,8 @@ class Brick {
 		this.isDestroyed = this.count === 0;
 
 		this.img = new Image();
-		this.img.src = "src/brick2-2.png";
+		if (this.count)
+			this.img.src = "src/brick" + this.count + "-2.png";
 		this.blinkDuration = Math.random() * 400 + 350;
 	}
 
@@ -555,12 +556,12 @@ class Brick {
 		this.blinkDuration--;
 		if (this.blinkDuration > 0) return;
 
-		if (this.img.src.endsWith("brick2-2.png")){
-			this.img.src = "src/brick2-1.png";
+		if (this.img.src.endsWith("brick" + this.count + "-2.png")){
+			this.img.src = "src/brick" + this.count + "-1.png";
 			this.blinkDuration = 30;
 		}
 		else{
-			this.img.src = "src/brick2-2.png";
+			this.img.src = "src/brick" + this.count + "-2.png";
 			this.blinkDuration = Math.random() * 400 + 350;
 		}
 	}
@@ -589,6 +590,8 @@ class Brick {
 			game.addScore(100);
 			game.playSound("damage" + (Math.floor(Math.random() * 8) + 1) + ".ogg",false);
 		}
+		else
+			this.img.src = "src/brick" + this.count + "-2.png";
 	}
 }
 
@@ -737,11 +740,11 @@ const levels =[
 	// Level 1 역기모양
 	[
 		[ // Level
-			[1, 1, 1, 1, 1, 1, 1, 1, 1],
+			[2, 2, 2, 2, 2, 2, 2, 2, 2],
 			[1, 1, 1, 1, 1, 1, 1, 1, 1],
 			[0, 0, 0, 0, 1, 0, 0, 0, 0],
 			[1, 1, 1, 1, 1, 1, 1, 1, 1],
-			[1, 1, 1, 1, 1, 1, 1, 1, 1],
+			[2 ,2, 2, 2, 2, 2, 2, 2, 2],
 			[1, 0, 0, 0, 1, 0, 0, 0, 1],
 		],
 		[ // Item
