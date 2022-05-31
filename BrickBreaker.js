@@ -28,6 +28,12 @@ $(document).ready(function(){
 				break;
 		}
 	});
+	$(".wooden-btn").click(function(){
+		game.playSound("menuconfirm.ogg", false);
+	}).hover(function(){
+		game.playSound("menuhover.ogg", false);
+	}, ()=>{});
+
 	$("#option-btn").click(function(){
 		$(".main-btn").css("display", "none");
 		$("#settings").css("display", "flex");
