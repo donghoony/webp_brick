@@ -89,15 +89,15 @@ $(document).ready(function(){
 		$(".main-btn").css("display", "none");
 		$("#scoreboard").css("display", "flex");
 		for(var i = 0; i < game.scoreboard.length; i++){
-			console.log(game.scoreboard[i]);
-			$("#scoreboard-table > tbody").append("<tr><td>" + i + "</td><td>" + game.scoreboard[i].name + "</td><td>" + game.scoreboard[i].score + "</td></tr>");
+			console.log("<tr><td>" + i + "</td><td>" + game.scoreboard[i].name + "</td><td>" + game.scoreboard[i].score + "</td></tr>");
+			$("#scoreboard-table > tbody").append(
+				"<tr class='data'><td>" + i + "</td><td>" + game.scoreboard[i].name + "</td><td>" + game.scoreboard[i].score + "</td></tr>");
 		}
-		// $("#scoreboard-nonexit").append("</table>");
 	});
 	$("#scoreboard-exit-btn").click(function(){
 		$(".main-btn").css("display", "block");
 		$("#scoreboard").css("display", "none");
-		$("#scoreboard-nonexit").empty();
+		$("#scoreboard-table > tbody > .data").remove();
 	})
 	$("#redbird").click(function(){
 		game.settings.character = redCharacter;
