@@ -322,7 +322,7 @@ td{
 	background: transparent url("src/cursor.gif") 0 0 no-repeat;
 }
 
-#tutorial{
+.tutorial-div{
 	flex-direction: column;
 	color: white;
 	height: 600px;
@@ -352,4 +352,8 @@ td{
 	left: 80px;
 	top: 8px;
 	height: 30px;
+}
+
+#paddle-activate{
+	filter: hue-rotate(270deg);
 }

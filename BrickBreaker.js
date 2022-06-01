@@ -62,6 +62,10 @@ $(document).ready(function(){
 		game.settings.bgVolume = $(this).val() * 0.007;
 		game.runningBgm.volume = game.settings.bgVolume;
 	})
+	$("#tutorial-next").click(function(){
+		$("#tutorial").hide();
+		$("#tutorial2").css("display", "flex");
+	});
 
 	$("#sfx-volume").on("input", function(){
 		game.settings.fxVolume = $(this).val() * 0.007;
